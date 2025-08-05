@@ -28,7 +28,6 @@
 	}
 	.container {
 		padding: 1rem;
-		max-width: 1024px;
 		margin: 1rem auto;
 		border: 1px solid black;
 		min-height: 1rem;

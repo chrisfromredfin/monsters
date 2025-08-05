@@ -1,13 +1,14 @@
 <script>
   import { playArea } from '$lib/stores/playArea.js';
-  import { get } from 'svelte/store';
+  import { scenarioLevel } from '$lib/stores/scenarioLevel.js';
 
 	export let data;
 	const monsterNames = Object.keys(data.monsters);
 
-	let scenarioLevel = null;
 	let unitStates = Array(10).fill(null); // [null, null, ..., null]
   let selectedMonster = 'Ancient Artillery';
+  let selectedLevel = null;
+  $: selectedLevel = $scenarioLevel ?? '';
 
   $: groupedUnits = Object.values(
     $playArea.reduce((acc, unit) => {
@@ -20,20 +21,21 @@
   function resetGame() {
     if (confirm('Are you sure you want to start over? This will clear all added monsters.')) {
       localStorage.removeItem('playArea');
+      localStorage.removeItem('scenarioLevel');
       playArea.set([]);
       unitStates = Array(10).fill(null);
       selectedMonster = 'Ancient Artillery';
-      scenarioLevel = null;
+      scenarioLevel.set(null);
     }
   }
 
   function handleAdd() {
-    if (!selectedMonster || scenarioLevel === null) return;
+    if (!selectedMonster || $scenarioLevel === null) return;
 
     const monster = data.monsters[selectedMonster];
     if (!monster) return;
 
-    const levelData = monster.level.find(l => l.level === +scenarioLevel);
+    const levelData = monster.level.find(l => l.level === +$scenarioLevel);
     if (!levelData) return;
 
     const newUnits = unitStates
@@ -58,7 +60,18 @@
 <div class="reset"><button on:click={resetGame}>Start Over</button></div>
 
 Scenario Level:
-<select bind:value={scenarioLevel} id="level">
+<select
+  bind:value={selectedLevel}
+  on:change={(e) => {
+    const newLevel = +e.target.value;
+    if ($playArea.length > 0 && newLevel !== $scenarioLevel) {
+      alert('Changing scenario level requires starting over.');
+      selectedLevel = $scenarioLevel ?? ''; // Revert UI
+    } else {
+      scenarioLevel.set(newLevel);
+    }
+  }}
+>
 	<option value="">-Choose-</option>
 	{#each [1, 2, 3, 4, 5, 6, 7] as level}
 		<option value={level}>{level}</option>
@@ -66,13 +79,13 @@ Scenario Level:
 </select>
 <hr />
 
-<select bind:value={selectedMonster} disabled={!scenarioLevel}>
+<select bind:value={selectedMonster} disabled={!$scenarioLevel}>
 	{#each monsterNames as name}
 		<option value={name}>{name}</option>
 	{/each}
 </select>
 
-{#if scenarioLevel}
+{#if $scenarioLevel}
 	<table border="1">
 		<thead>
 			<tr>
