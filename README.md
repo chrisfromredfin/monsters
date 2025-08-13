@@ -1,38 +1,18 @@
-# sv
+# Monster Tracker!
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+This is a Gloomhaven monster tracker app that started as a pet project for my
+own gaming group who has been playing Gloomhaven for about a year now.
 
-## Creating a project
+It is built using [Svelte](https://svelte.dev), the frontend framework I am 
+most familiar with.
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Features
 
-```sh
-# create a new project in the current directory
-npx sv create
+- Tracks health (hit points) in a downward motion, using +/- buttons.
+- Can track conditions (muddled, strengthened)
+- Monsters that are not long for this world get a glowing health bar.
 
-# create a new project in my-app
-npx sv create my-app
-```
+## Conspicuous in Their Absence
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+- There is no round tracking or automatic removal of conditions
+- There is no calculation of "hits" against conditions. Do that yourself!
