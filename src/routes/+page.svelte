@@ -2,6 +2,25 @@
   import { playArea } from '$lib/stores/playArea.js';
   import { scenarioLevel } from '$lib/stores/scenarioLevel.js';
 
+  /** Icons **/
+  const modules = import.meta.glob('$lib/assets/*.svg', { eager: true });
+
+  const iconMap = {};
+  for (const path in modules) {
+    const key = path.split('/').pop().replace('.svg', '').toLowerCase();
+    iconMap[key] = modules[path].default;
+  }
+
+  /** Conditions **/
+  const CONDITIONS = [
+    'strengthened',
+    'muddled',
+    'poisoned',
+    'wounded',
+    'stunned',
+    'immobilized',  
+  ];
+
 	export let data;
 	const monsterNames = Object.keys(data.monsters);
 
@@ -46,7 +65,8 @@
           type,
           stats: levelData[type],
           name: selectedMonster,
-          currentHp: levelData[type].health
+          currentHp: levelData[type].health,
+          activeConditions: []
         };
       })
       .filter(Boolean);
@@ -141,22 +161,54 @@ Scenario Level:
           {#each group as unit}
           <!-- #TODO - add a @const here for the shield value-->
             <div class="monster-card {unit.type}">
-              <strong>#{unit.number}</strong> ({unit.type})
-              <ul>
-                <li>
-                  HP: {unit.currentHp}/{unit.stats.health}
-                  <div class="hp-controls">
+              <div><strong>#{unit.number}</strong> ({unit.type})</div>
+
+              HP: <span class="large">{unit.currentHp}</span>/{unit.stats.health}
+                  <span class="hp-controls">
                     <button on:click={() => unit.currentHp = Math.max(0, unit.currentHp - 1)}>-</button>
                     <button on:click={() => unit.currentHp = Math.min(unit.stats.health, unit.currentHp + 1)}>+</button>
-                  </div>
-                </li>
-                <li>Move: {unit.stats.move}</li>
-                <li>Attack: {unit.stats.attack}</li>
-                <li>Range: {unit.stats.range}</li>
+                  </span>
+
+                  <div>Mov: {unit.stats.move} | 
+                      Atk: {unit.stats.attack} | 
+                      Rng: {unit.stats.range}</div>
                 {#if unit.stats.attributes.length > 0}
-                  <li>Attributes: {unit.stats.attributes.join(', ')}</li>
+                  Attributes:<br/>
+                  <div class="attributes">
+                  {#each unit.stats.attributes as attr}
+                    {@const iconKey = attr.split(' ')[0]?.toLowerCase()}
+                    {@const attrValue = attr.split(' ')[1]?.toLowerCase()}
+                    {#if iconMap[iconKey]}
+                      <span><img src={iconMap[iconKey]} width="16" height="16" alt={attr} title={attr} class="attribute-icon" /> {attrValue}</span>
+                    {:else}
+                      <span>{attr}</span> <!-- Fallback -->
+                    {/if}
+                  {/each}
+                  </div>
                 {/if}
-              </ul>
+              
+              <div class="conditions">
+                {#each CONDITIONS as condition}
+                  {@const isActive = (unit.activeConditions ?? []).includes(condition)}
+                  <button on:click={() => {
+                      if (isActive) {
+                        unit.activeConditions = unit.activeConditions.filter(c => c !== condition);
+                      } else {
+                        unit.activeConditions = [...unit.activeConditions, condition];
+                      }
+                      playArea.update((area) => [...area]); // trigger reactivity
+                    }}
+                  >
+                  <img
+                    src={iconMap[condition]}
+                    alt={condition}
+                    title={condition}
+                    class="condition-icon {isActive ? 'active' : 'inactive'}"
+                  />                    
+                  </button>
+                {/each}
+              </div>
+
               <div class="health-bar">
                 <div
                   class={`health-fill ${(unit.currentHp < 6) ? 'pulse' : ''}`}
@@ -239,5 +291,41 @@ Scenario Level:
 
   div.reset {
     text-align: right;
+  }
+  .attributes {
+    display: flex;
+    justify-content: space-between;
+  }
+  .large {
+    font-size: 1.5rem;
+  }
+
+  .conditions {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+    gap: 4px;
+  }
+
+  .conditions button {
+    background-color: transparent;
+    padding: 0;
+    border-color: transparent;
+  }
+
+  .condition-icon {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    opacity: 0.18;
+    transition: opacity 0.2s ease;
+  }
+
+  .condition-icon.active {
+    opacity: 1;
+  }
+
+  .condition-icon.inactive:hover {
+    opacity: 0.6;
   }
 </style>
