@@ -1,24 +1,10 @@
 <script>
   import { playArea } from '$lib/stores/playArea.js';
   import { scenarioLevel } from '$lib/stores/scenarioLevel.js';
+  import { iconMap, monsterImageMap } from '$lib/assets/registry';
 
   /** Icons **/
   const modules = import.meta.glob('$lib/assets/*.svg', { eager: true });
-
-  const iconMap = {};
-  for (const path in modules) {
-    const key = path.split('/').pop().replace('.svg', '').toLowerCase();
-    iconMap[key] = modules[path].default;
-  }
-
-  /** Monster Images **/
-  const monsterImages = import.meta.glob('$lib/assets/monsters/*.png', { eager: true });
-
-  const monsterImageMap = {};
-  for (const path in monsterImages) {
-    const key = path.split('/').pop().replace('.png', '');
-    monsterImageMap[key] = monsterImages[path].default;
-  }
 
   /** Conditions **/
   const CONDITIONS = [
@@ -246,7 +232,6 @@ Scenario Level:
                     {#each unit.stats.attributes as attr}
                       {@const iconKey = attr.split(' ')[0]?.toLowerCase()}
                       {@const attrValue = attr.split(' ')[1]?.toLowerCase()}
-                      {console.log(iconMap, iconKey)}
                       {#if iconMap[iconKey]}
                         <span class="attribute-group"
                           ><img
