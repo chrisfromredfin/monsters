@@ -21,7 +21,15 @@
   }
 
   /** Conditions **/
-  const CONDITIONS = ['strengthened', 'muddled', 'poisoned', 'wounded', 'stunned', 'immobilized'];
+  const CONDITIONS = [
+    'strengthened',
+    'muddled',
+    'poisoned',
+    'wounded',
+    'stunned',
+    'immobilized',
+    'disarmed'
+  ];
 
   export let data;
   const monsterNames = Object.keys(data.monsters);
@@ -70,7 +78,9 @@
     const newUnits = unitStates
       .map((type, i) => {
         if (!type) return null;
+        const id = crypto?.randomUUID?.() ?? `${selectedMonster}-${type}-${i + 1}-${Date.now()}`;
         return {
+          id,
           number: i + 1,
           type,
           stats: levelData[type],
@@ -85,6 +95,10 @@
     unitStates = Array(10).fill(null);
   }
 
+  function removeUnit(id) {
+    playArea.update((arr) => arr.filter((u) => u.id !== id));
+  }
+
   let addPanelOpen = true; // controls <details> open/closed
   let decidedInitialOpen = false; // ensure we run this logic only once
 
@@ -96,10 +110,11 @@
 </script>
 
 <div class="reset"><button on:click={resetGame}>Start Over</button></div>
-
+<h1>Gloomhaven Monster Tracker</h1>
 Scenario Level:
 <select
   bind:value={selectedLevel}
+  name="level"
   on:change={(e) => {
     const newLevel = +e.target.value;
     if ($playArea.length > 0 && newLevel !== $scenarioLevel) {
@@ -191,8 +206,29 @@ Scenario Level:
           {#each group as unit}
             <!-- #TODO - add a @const here for the shield value-->
             <div class="monster-card {unit.type}">
+              <button
+                class="remove-btn"
+                aria-label="Remove card"
+                title="Remove"
+                on:click={() => removeUnit(unit.id)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  viewBox="-0.5 0 25 25"
+                  ><path
+                    stroke="#0F0F0F"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-miterlimit="10"
+                    d="M6.5 7.085v14.33c0 .28.22.5.5.5h10c.28 0 .5-.22.5-.5V7.085M14 5.085h-4v-1.5c0-.28.22-.5.5-.5h3c.28 0 .5.22.5.5zM5 5.085h14M12 10.465v7.46M15 9.465v9.46M9 9.465v9.46"
+                  /></svg
+                >
+              </button>
               <div class="top">
-                <div><strong>#{unit.number}</strong> ({unit.type})</div>
+                <div><strong class="large">#{unit.number}</strong> ({unit.type})</div>
 
                 HP:<span class="large">{unit.currentHp}</span>/{unit.stats.health}
                 <span class="hp-controls">
@@ -212,7 +248,7 @@ Scenario Level:
                       {@const attrValue = attr.split(' ')[1]?.toLowerCase()}
                       {console.log(iconMap, iconKey)}
                       {#if iconMap[iconKey]}
-                        <span
+                        <span class="attribute-group"
                           ><img
                             src={iconMap[iconKey]}
                             width="16"
@@ -290,9 +326,10 @@ Scenario Level:
   }
 
   .monster-card {
+    position: relative;
     border: 2px solid #ccc;
     padding: 0.5rem;
-    width: 200px;
+    width: 230px;
     background: #f9f9f9;
     border-radius: 4px;
     display: flex;
@@ -305,6 +342,27 @@ Scenario Level:
   .monster-card.elite {
     border-color: gold;
     background: rgba(255, 215, 0, 0.2);
+  }
+
+  /** Trash */
+  .remove-btn {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    border: 1px dotted gray;
+    background: white;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    color: #7a3b3b;
+    opacity: 0.6;
+  }
+  .remove-btn:hover {
+    opacity: 1;
+  }
+  .remove-btn:focus-visible {
+    outline: 2px solid #a66;
+    border-radius: 3px;
   }
 
   .hp-controls {
@@ -350,10 +408,17 @@ Scenario Level:
 
   div.reset {
     text-align: right;
+    position: absolute;
+    right: 1rem;
   }
   .attributes {
     display: flex;
     justify-content: space-between;
+  }
+  .attribute-group {
+    display: flex;
+    gap: 0.2rem;
+    align-items: center;
   }
   .large {
     font-size: 1.5rem;
@@ -407,7 +472,11 @@ Scenario Level:
     font-size: 0.95rem;
   }
 
-  /* Optional: give the headings a slightly warmer dark color */
+  /* give the headings a slightly warmer dark color */
+  h1 {
+    margin-block-start: 0;
+  }
+
   h1,
   h2,
   h3 {
