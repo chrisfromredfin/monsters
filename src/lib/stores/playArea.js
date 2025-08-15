@@ -53,7 +53,13 @@ export const groupedUnits =
       /** @type {Record<string, import('$lib/types').Unit[]>} */
       const byName = {};
       for (const u of arr) (byName[u.name] ||= []).push(u);
-      for (const k in byName) byName[k].sort((a, b) => a.number - b.number);
+      for (const k in byName)
+        byName[k].sort((a, b) => {
+          // elites first
+          if (a.type !== b.type) return a.type === 'elite' ? -1 : 1;
+          // then ascending by number
+          return a.number - b.number;
+        });
       return Object.values(byName);
     })
   );
