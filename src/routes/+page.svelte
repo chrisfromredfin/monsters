@@ -1,86 +1,26 @@
 <script>
-  import { playArea } from '$lib/stores/playArea.js';
+  import { playArea, groupedUnits } from '$lib/stores/playArea.js';
   import { scenarioLevel } from '$lib/stores/scenarioLevel.js';
-  import { iconMap, monsterImageMap } from '$lib/assets/registry';
+  import { monsterImageMap } from '$lib/assets/registry';
   import MonsterCard from '$lib/components/MonsterCard.svelte';
-
-  /** Conditions **/
-  const CONDITIONS = [
-    'strengthened',
-    'muddled',
-    'poisoned',
-    'wounded',
-    'stunned',
-    'immobilized',
-    'disarmed'
-  ];
+  import AddPanel from '$lib/components/AddPanel.svelte';
 
   export let data;
   const monsterNames = Object.keys(data.monsters);
 
-  let unitStates = Array(10).fill(null); // [null, null, ..., null]
-  let selectedMonster = 'Ancient Artillery';
+  /** @type {number|null} */
   let selectedLevel = null;
   $: selectedLevel = $scenarioLevel ?? '';
-
-  $: groupedUnits = Object.values(
-    $playArea.reduce((acc, unit) => {
-      if (!acc[unit.name]) acc[unit.name] = [];
-      acc[unit.name].push(unit);
-      return acc;
-    }, {})
-  ).map((group) => group.sort((a, b) => a.number - b.number));
 
   function resetGame() {
     if (confirm('Are you sure you want to start over? This will clear all added monsters.')) {
       localStorage.removeItem('playArea');
       localStorage.removeItem('scenarioLevel');
       playArea.set([]);
-      unitStates = Array(10).fill(null);
-      selectedMonster = 'Ancient Artillery';
       scenarioLevel.set(null);
       addPanelOpen = true; // <-- re-open after reset
       decidedInitialOpen = true; // keep future auto-decisions off
     }
-  }
-
-  function adjustHp(unit, delta) {
-    const max = unit.stats.health ?? 0;
-    unit.currentHp = Math.max(0, Math.min(max, (unit.currentHp ?? max) + delta));
-    playArea.update((a) => [...a]); // notify store
-  }
-
-  function handleAdd() {
-    if (!selectedMonster || $scenarioLevel === null) return;
-
-    const monster = data.monsters[selectedMonster];
-    if (!monster) return;
-
-    const levelData = monster.level.find((l) => l.level === +$scenarioLevel);
-    if (!levelData) return;
-
-    const newUnits = unitStates
-      .map((type, i) => {
-        if (!type) return null;
-        const id = crypto?.randomUUID?.() ?? `${selectedMonster}-${type}-${i + 1}-${Date.now()}`;
-        return {
-          id,
-          number: i + 1,
-          type,
-          stats: levelData[type],
-          name: selectedMonster,
-          currentHp: levelData[type].health,
-          activeConditions: []
-        };
-      })
-      .filter(Boolean);
-
-    playArea.update((old) => [...old, ...newUnits]);
-    unitStates = Array(10).fill(null);
-  }
-
-  function removeUnit(id) {
-    playArea.update((arr) => arr.filter((u) => u.id !== id));
   }
 
   let addPanelOpen = true; // controls <details> open/closed
@@ -118,63 +58,13 @@ Scenario Level:
 
 <details class="add-monsters" bind:open={addPanelOpen}>
   <summary>Add Monsters</summary>
-  <select bind:value={selectedMonster} disabled={!$scenarioLevel}>
-    {#each monsterNames as name}
-      <option value={name}>{name}</option>
-    {/each}
-  </select>
-
-  {#if $scenarioLevel}
-    <table border="1">
-      <thead>
-        <tr>
-          <th></th>
-          {#each Array(10)
-            .fill(0)
-            .map((_, i) => i + 1) as ndx}
-            <th>{ndx}</th>
-          {/each}
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Elite</td>
-          {#each unitStates as state, i}
-            <td
-              ><input
-                type="checkbox"
-                checked={state === 'elite'}
-                on:change={() => {
-                  unitStates[i] = state === 'elite' ? null : 'elite';
-                }}
-              /></td
-            >
-          {/each}
-        </tr>
-        <tr>
-          <td>Regular</td>
-          {#each unitStates as state, i}
-            <td
-              ><input
-                type="checkbox"
-                checked={state === 'normal'}
-                on:change={() => {
-                  unitStates[i] = state === 'normal' ? null : 'normal';
-                }}
-              /></td
-            >
-          {/each}
-        </tr>
-      </tbody>
-    </table>
-    <button on:click={handleAdd} disabled={!selectedMonster}>Add</button>
-  {/if}
+  <AddPanel {data} {monsterNames} />
 </details>
 
 {#if $playArea.length > 0}
   <h2>Monsters</h2>
   <div class="play-area">
-    {#each groupedUnits as group}
+    {#each $groupedUnits as group}
       <div class="monster-group">
         <h3>
           {#if monsterImageMap[`Horz-${group[0].name}`]}
