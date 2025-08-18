@@ -59,7 +59,7 @@
 </select>
 
 {#if $scenarioLevel}
-  <table border="1">
+  <table>
     <thead>
       <tr>
         <th></th>
@@ -109,5 +109,12 @@
   /* keep panel spacing nice if used inside <details> */
   :global(.add-monsters) > * {
     margin-bottom: 0.5rem;
+  }
+  table {
+    border-collapse: collapse;
+  }
+  td {
+    border: 1px solid gray;
+    padding: 0.25rem;
   }
 </style>
