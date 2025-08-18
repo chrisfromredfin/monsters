@@ -6,12 +6,15 @@
   // Props from parent
   export let data; // the big JSON (monsters, levels...)
   export let monsterNames = []; // list of names for the <select>
+  export let bossNames = []; // list of names for the boss <select>
 
   const dispatch = createEventDispatcher();
 
   // Local UI state (kept internal to the panel)
   let selectedMonster = 'Ancient Artillery';
   let unitStates = Array(10).fill(null); // ["elite" | "normal" | null] per slot
+
+  let selectedBoss = '';
 
   function handleAdd() {
     if (!selectedMonster || $scenarioLevel === null) return;
@@ -49,6 +52,10 @@
 
     // Let parent know we added something (so it can auto-collapse)
     dispatch('added');
+  }
+
+  function handleAddBoss() {
+    console.log('you want to add a boss: ' + selectedBoss);
   }
 </script>
 
@@ -103,6 +110,15 @@
   </table>
 
   <button on:click={handleAdd} disabled={!selectedMonster}>Add</button>
+
+  <div class="boss-add">
+    <select bind:value={selectedBoss} disabled={!$scenarioLevel}>
+      {#each bossNames as name}
+        <option value={name}>{name}</option>
+      {/each}
+    </select>
+    <button on:click={handleAddBoss} disabled={!selectedBoss}>Add</button>
+  </div>
 {/if}
 
 <style>
