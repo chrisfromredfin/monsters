@@ -6,11 +6,13 @@
   // Props from parent
   export let data; // the big JSON (monsters, levels...)
   export let monsterNames = []; // list of names for the <select>
+  export let bossNames = []; // list of boss names for the boss <select>
 
   const dispatch = createEventDispatcher();
 
   // Local UI state (kept internal to the panel)
   let selectedMonster = 'Ancient Artillery';
+  let selectedBoss = bossNames[0] || '';
   let unitStates = Array(10).fill(null); // ["elite" | "normal" | null] per slot
 
   function handleAdd() {
@@ -46,6 +48,43 @@
 
     // Reset checkboxes for next add
     unitStates = Array(10).fill(null);
+
+    // Let parent know we added something (so it can auto-collapse)
+    dispatch('added');
+  }
+
+  function handleAddBoss() {
+    if (!selectedBoss || $scenarioLevel === null) return;
+
+    const boss = data.bosses[selectedBoss];
+    if (!boss) return;
+
+    const levelData = boss.level.find((l) => l.level === +$scenarioLevel);
+    if (!levelData) return;
+
+    const now = Date.now();
+    const id = crypto?.randomUUID?.() ?? `${selectedBoss}-boss-${now}`;
+    
+    const newBoss = {
+      id,
+      number: 1, // Bosses are typically unique
+      type: 'boss',
+      stats: {
+        health: levelData.health,
+        move: levelData.move,
+        attack: levelData.attack,
+        range: levelData.range || 0,
+        special1: levelData.special1 || [],
+        special2: levelData.special2 || [],
+        immunities: levelData.immunities || [],
+        notes: levelData.notes || ''
+      },
+      name: selectedBoss,
+      currentHp: levelData.health,
+      activeConditions: []
+    };
+
+    playArea.update((old) => [...old, newBoss]);
 
     // Let parent know we added something (so it can auto-collapse)
     dispatch('added');
@@ -103,6 +142,15 @@
   </table>
 
   <button on:click={handleAdd} disabled={!selectedMonster}>Add</button>
+  
+  {#if bossNames.length > 0}
+    <select bind:value={selectedBoss} disabled={!$scenarioLevel}>
+      {#each bossNames as name}
+        <option value={name}>{name}</option>
+      {/each}
+    </select>
+    <button on:click={handleAddBoss} disabled={!selectedBoss}>Add Boss</button>
+  {/if}
 {/if}
 
 <style>
