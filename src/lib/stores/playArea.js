@@ -18,24 +18,15 @@ function loadInitial() {
         id: String(u.id ?? crypto?.randomUUID?.() ?? Date.now()),
         name: String(u.name ?? ''),
         number: Number(u.number ?? 1),
-        type: u.type === 'elite' ? 'elite' : u.type === 'boss' ? 'boss' : 'normal',
-        stats: u.type === 'boss' ? {
-          health: u.stats?.health ?? 0, // Keep as string for bosses (e.g., "8xC")
-          move: Number(u.stats?.move ?? 0),
-          attack: Number(u.stats?.attack ?? 0),
-          range: u.stats?.range != null ? Number(u.stats.range) : undefined,
-          special1: Array.isArray(u.stats?.special1) ? u.stats.special1 : [],
-          special2: Array.isArray(u.stats?.special2) ? u.stats.special2 : [],
-          immunities: Array.isArray(u.stats?.immunities) ? u.stats.immunities : [],
-          notes: String(u.stats?.notes ?? '')
-        } : {
+        type: u.type === 'elite' ? 'elite' : 'normal',
+        stats: {
           health: Number(u.stats?.health ?? 0),
           move: Number(u.stats?.move ?? 0),
           attack: Number(u.stats?.attack ?? 0),
           range: u.stats?.range != null ? Number(u.stats.range) : undefined,
           attributes: Array.isArray(u.stats?.attributes) ? u.stats.attributes : []
         },
-        currentHp: u.type === 'boss' ? (u.currentHp ?? u.stats?.health ?? 0) : Number(u.currentHp ?? u.stats?.health ?? 0),
+        currentHp: Number(u.currentHp ?? u.stats?.health ?? 0),
         activeConditions: Array.isArray(u.activeConditions) ? u.activeConditions : []
       })
     );

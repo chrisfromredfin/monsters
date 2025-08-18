@@ -7,7 +7,6 @@
 
   export let data;
   const monsterNames = Object.keys(data.monsters);
-  const bossNames = Object.keys(data.bosses || {});
 
   /** @type {number|null} */
   let selectedLevel = null;
@@ -59,7 +58,7 @@ Scenario Level:
 
 <details class="add-monsters" bind:open={addPanelOpen}>
   <summary>Add Monsters</summary>
-  <AddPanel {data} {monsterNames} {bossNames} />
+  <AddPanel {data} {monsterNames} />
 </details>
 
 {#if $playArea.length > 0}
