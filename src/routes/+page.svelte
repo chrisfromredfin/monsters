@@ -3,6 +3,7 @@
   import { scenarioLevel } from '$lib/stores/scenarioLevel.js';
   import { monsterImageMap } from '$lib/assets/registry';
   import MonsterCard from '$lib/components/MonsterCard.svelte';
+  import BossCard from '$lib/components/BossCard.svelte';
   import AddPanel from '$lib/components/AddPanel.svelte';
 
   export let data;
@@ -79,7 +80,11 @@ Scenario Level:
         </h3>
         <div class="card-row">
           {#each group as unit (unit.id)}
-            <MonsterCard {unit} />
+            {#if unit.type === 'boss'}
+              <BossCard {unit} />
+            {:else}
+              <MonsterCard {unit} />
+            {/if}
           {/each}
         </div>
       </div>
