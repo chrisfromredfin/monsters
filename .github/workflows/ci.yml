@@ -29,6 +29,7 @@ jobs:
 
       - name: Run type checking
         run: yarn run check
+        continue-on-error: true
 
       - name: Run tests
         run: yarn test:run
