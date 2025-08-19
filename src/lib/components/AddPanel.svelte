@@ -18,6 +18,13 @@
   let selectedMonster = 'Ancient Artillery';
   let unitStates = Array(10).fill(null); // ["elite" | "normal" | null] per slot
 
+  // Get existing numbers for the selected monster
+  $: existingNumbers = new Set(
+    $playArea
+      .filter(unit => unit.name === selectedMonster)
+      .map(unit => unit.number)
+  );
+
   function handleAdd() {
     if (!selectedMonster || $scenarioLevel === null) return;
 
@@ -31,11 +38,16 @@
     const newUnits = unitStates
       .map((type, i) => {
         if (!type) return null;
-        const id = crypto?.randomUUID?.() ?? `${selectedMonster}-${type}-${i + 1}-${now}`;
+        
+        const number = i + 1;
+        // Skip if this number already exists for this monster
+        if (existingNumbers.has(number)) return null;
+        
+        const id = crypto?.randomUUID?.() ?? `${selectedMonster}-${type}-${number}-${now}`;
         const stats = levelData[type];
         return {
           id,
-          number: i + 1,
+          number,
           type,
           stats,
           name: selectedMonster,
@@ -123,10 +135,14 @@
       <tr>
         <td>Elite</td>
         {#each unitStates as state, i}
-          <td>
+          {@const number = i + 1}
+          {@const isExisting = existingNumbers.has(number)}
+          <td class:existing={isExisting}>
             <input
               type="checkbox"
               checked={state === 'elite'}
+              disabled={isExisting}
+              title={isExisting ? `${selectedMonster} #${number} already exists` : ''}
               on:change={() => {
                 unitStates[i] = state === 'elite' ? null : 'elite';
               }}
@@ -137,10 +153,14 @@
       <tr>
         <td>Regular</td>
         {#each unitStates as state, i}
-          <td>
+          {@const number = i + 1}
+          {@const isExisting = existingNumbers.has(number)}
+          <td class:existing={isExisting}>
             <input
               type="checkbox"
               checked={state === 'normal'}
+              disabled={isExisting}
+              title={isExisting ? `${selectedMonster} #${number} already exists` : ''}
               on:change={() => {
                 unitStates[i] = state === 'normal' ? null : 'normal';
               }}
@@ -187,5 +207,14 @@
   td {
     border: 1px solid gray;
     padding: 0.25rem;
+  }
+  
+  td.existing {
+    background-color: #f0f0f0;
+    opacity: 0.6;
+  }
+  
+  td.existing input[type="checkbox"] {
+    cursor: not-allowed;
   }
 </style>
