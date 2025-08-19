@@ -28,7 +28,7 @@ jobs:
         run: yarn lint
 
       - name: Run type checking
-        run: yarn check
+        run: yarn run check
 
       - name: Run tests
         run: yarn test:run
