@@ -39,28 +39,30 @@ describe('AddPanel - Duplicate Prevention Logic', () => {
     const existingNumbers = getExistingNumbers(playAreaStore, selectedMonster);
     const now = Date.now();
 
-    const newUnits = /** @type {Unit[]} */ (unitStates
-      .map((type, i) => {
-        if (!type) return null;
+    const newUnits = /** @type {Unit[]} */ (
+      unitStates
+        .map((type, i) => {
+          if (!type) return null;
 
-        const number = i + 1;
-        // This is the core logic we're testing - skip if number already exists
-        if (existingNumbers.has(number)) return null;
+          const number = i + 1;
+          // This is the core logic we're testing - skip if number already exists
+          if (existingNumbers.has(number)) return null;
 
-        const stats = levelData[type];
-        /** @type {Unit} */
-        const unit = {
-          id: `${selectedMonster}-${type}-${number}-${now}`,
-          number,
-          type: /** @type {'normal' | 'elite' | 'boss'} */ (type),
-          stats,
-          name: selectedMonster,
-          currentHp: stats.health,
-          activeConditions: []
-        };
-        return unit;
-      })
-      .filter(Boolean));
+          const stats = levelData[type];
+          /** @type {Unit} */
+          const unit = {
+            id: `${selectedMonster}-${type}-${number}-${now}`,
+            number,
+            type: /** @type {'normal' | 'elite' | 'boss'} */ (type),
+            stats,
+            name: selectedMonster,
+            currentHp: stats.health,
+            activeConditions: []
+          };
+          return unit;
+        })
+        .filter(Boolean)
+    );
 
     if (newUnits.length > 0) {
       playAreaStore.update((old) => [...old, ...newUnits]);
@@ -173,46 +175,46 @@ describe('AddPanel - Duplicate Prevention Logic', () => {
 
   it('should correctly identify existing numbers for a specific monster', () => {
     playArea.set([
-      { 
-        id: '1', 
-        name: 'Ancient Artillery', 
-        number: 1, 
+      {
+        id: '1',
+        name: 'Ancient Artillery',
+        number: 1,
         type: 'normal',
         stats: { health: 6, move: 0, attack: 2, range: 4, attributes: [] },
         currentHp: 6,
         activeConditions: []
       },
-      { 
-        id: '2', 
-        name: 'Ancient Artillery', 
-        number: 3, 
+      {
+        id: '2',
+        name: 'Ancient Artillery',
+        number: 3,
         type: 'elite',
         stats: { health: 9, move: 0, attack: 3, range: 5, attributes: [] },
         currentHp: 9,
         activeConditions: []
       },
-      { 
-        id: '3', 
-        name: 'Bandit Guard', 
-        number: 1, 
+      {
+        id: '3',
+        name: 'Bandit Guard',
+        number: 1,
         type: 'normal',
         stats: { health: 8, move: 2, attack: 3, range: 0, attributes: [] },
         currentHp: 8,
         activeConditions: []
       },
-      { 
-        id: '4', 
-        name: 'Bandit Guard', 
-        number: 2, 
+      {
+        id: '4',
+        name: 'Bandit Guard',
+        number: 2,
         type: 'normal',
         stats: { health: 8, move: 2, attack: 3, range: 0, attributes: [] },
         currentHp: 8,
         activeConditions: []
       },
-      { 
-        id: '5', 
-        name: 'Ancient Artillery', 
-        number: 5, 
+      {
+        id: '5',
+        name: 'Ancient Artillery',
+        number: 5,
         type: 'normal',
         stats: { health: 6, move: 0, attack: 2, range: 4, attributes: [] },
         currentHp: 6,
