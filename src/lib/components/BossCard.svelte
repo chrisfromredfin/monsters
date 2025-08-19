@@ -10,17 +10,25 @@
   import '$lib/styles/cards.css';
 
   /** @typedef {import('$lib/types').Unit} Unit */
-  /** @type {{ unit: Unit }} */
+  
+  // Props
+  /** @type {Unit} */
   export let unit;
 
   function handleRemove() {
     removeUnit(unit.id);
   }
 
+  /**
+   * @param {CustomEvent<{delta: number}>} event
+   */
   function handleHpAdjust(event) {
     adjustHp(unit, event.detail.delta);
   }
 
+  /**
+   * @param {CustomEvent<{condition: string}>} event
+   */
   function handleConditionToggle(event) {
     toggleCondition(unit, event.detail.condition);
   }
