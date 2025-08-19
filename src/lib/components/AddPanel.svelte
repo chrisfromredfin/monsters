@@ -20,9 +20,7 @@
 
   // Get existing numbers for the selected monster
   $: existingNumbers = new Set(
-    $playArea
-      .filter(unit => unit.name === selectedMonster)
-      .map(unit => unit.number)
+    $playArea.filter((unit) => unit.name === selectedMonster).map((unit) => unit.number)
   );
 
   function handleAdd() {
@@ -38,11 +36,11 @@
     const newUnits = unitStates
       .map((type, i) => {
         if (!type) return null;
-        
+
         const number = i + 1;
         // Skip if this number already exists for this monster
         if (existingNumbers.has(number)) return null;
-        
+
         const id = crypto?.randomUUID?.() ?? `${selectedMonster}-${type}-${number}-${now}`;
         const stats = levelData[type];
         return {
@@ -114,7 +112,7 @@
 </script>
 
 <select bind:value={selectedMonster} disabled={!$scenarioLevel}>
-  {#each monsterNames as name}
+  {#each monsterNames as name (name)}
     <option value={name}>{name}</option>
   {/each}
 </select>
@@ -126,7 +124,7 @@
         <th></th>
         {#each Array(10)
           .fill(0)
-          .map((_, i) => i + 1) as ndx}
+          .map((_, i) => i + 1) as ndx (ndx)}
           <th>{ndx}</th>
         {/each}
       </tr>
@@ -134,7 +132,7 @@
     <tbody>
       <tr>
         <td>Elite</td>
-        {#each unitStates as state, i}
+        {#each unitStates as state, i (i)}
           {@const number = i + 1}
           {@const isExisting = existingNumbers.has(number)}
           <td class:existing={isExisting}>
@@ -152,7 +150,7 @@
       </tr>
       <tr>
         <td>Regular</td>
-        {#each unitStates as state, i}
+        {#each unitStates as state, i (i)}
           {@const number = i + 1}
           {@const isExisting = existingNumbers.has(number)}
           <td class:existing={isExisting}>
@@ -182,7 +180,7 @@
     {#if addingBoss}
       <div>
         <select bind:value={selectedBoss}>
-          {#each bossNames as b}<option value={b}>{b}</option>{/each}
+          {#each bossNames as b (b)}<option value={b}>{b}</option>{/each}
         </select>
 
         <label
@@ -208,13 +206,13 @@
     border: 1px solid gray;
     padding: 0.25rem;
   }
-  
+
   td.existing {
     background-color: #f0f0f0;
     opacity: 0.6;
   }
-  
-  td.existing input[type="checkbox"] {
+
+  td.existing input[type='checkbox'] {
     cursor: not-allowed;
   }
 </style>

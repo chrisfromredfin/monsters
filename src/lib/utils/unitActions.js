@@ -30,8 +30,6 @@ export function adjustHp(unit, delta) {
 export function toggleCondition(unit, condition) {
   const list = unit.activeConditions ?? [];
   const isActive = list.includes(condition);
-  unit.activeConditions = isActive 
-    ? list.filter((c) => c !== condition) 
-    : [...list, condition];
+  unit.activeConditions = isActive ? list.filter((c) => c !== condition) : [...list, condition];
   playArea.update((a) => [...a]); // trigger reactivity/persistence
 }

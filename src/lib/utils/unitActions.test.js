@@ -276,8 +276,8 @@ describe('Unit Actions', () => {
 
       // Verify we can identify existing numbers
       const currentPlayArea = get(playArea);
-      const ancientArtilleryUnits = currentPlayArea.filter(u => u.name === 'Ancient Artillery');
-      const existingNumbers = new Set(ancientArtilleryUnits.map(u => u.number));
+      const ancientArtilleryUnits = currentPlayArea.filter((u) => u.name === 'Ancient Artillery');
+      const existingNumbers = new Set(ancientArtilleryUnits.map((u) => u.number));
 
       expect(existingNumbers.has(1)).toBe(true);
       expect(existingNumbers.has(2)).toBe(false);

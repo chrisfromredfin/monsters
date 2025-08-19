@@ -5,5 +5,19 @@ yarn.lock
 bun.lock
 bun.lockb
 
+# Build output
+build/
+.svelte-kit/
+
+# Coverage reports
+coverage/
+
+# DDEV files
+.ddev/
+
+# IDE files
+.vscode/
+
 # Miscellaneous
 /static/
+.DS_Store

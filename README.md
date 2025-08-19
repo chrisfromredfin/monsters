@@ -3,7 +3,7 @@
 This is a Gloomhaven monster tracker app that started as a pet project for my
 own gaming group who has been playing Gloomhaven for about a year now.
 
-It is built using [Svelte](https://svelte.dev), the frontend framework I am 
+It is built using [Svelte](https://svelte.dev), the frontend framework I am
 most familiar with.
 
 ## Features

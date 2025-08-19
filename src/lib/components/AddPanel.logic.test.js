@@ -9,32 +9,28 @@ import { get, writable } from 'svelte/store';
 
 describe('AddPanel - Duplicate Prevention Logic', () => {
   let playArea;
-  
+
   beforeEach(() => {
     playArea = writable([]);
   });
 
   function getExistingNumbers(playAreaStore, monsterName) {
     const units = get(playAreaStore);
-    return new Set(
-      units
-        .filter(unit => unit.name === monsterName)
-        .map(unit => unit.number)
-    );
+    return new Set(units.filter((unit) => unit.name === monsterName).map((unit) => unit.number));
   }
 
   function simulateAddAction(playAreaStore, selectedMonster, unitStates, levelData) {
     const existingNumbers = getExistingNumbers(playAreaStore, selectedMonster);
     const now = Date.now();
-    
+
     const newUnits = unitStates
       .map((type, i) => {
         if (!type) return null;
-        
+
         const number = i + 1;
         // This is the core logic we're testing - skip if number already exists
         if (existingNumbers.has(number)) return null;
-        
+
         const stats = levelData[type];
         return {
           id: `${selectedMonster}-${type}-${number}-${now}`,
@@ -51,7 +47,7 @@ describe('AddPanel - Duplicate Prevention Logic', () => {
     if (newUnits.length > 0) {
       playAreaStore.update((old) => [...old, ...newUnits]);
     }
-    
+
     return newUnits;
   }
 
@@ -111,16 +107,16 @@ describe('AddPanel - Duplicate Prevention Logic', () => {
 
     // Should only add #2 and #4 (skip #1 and #3 because they exist)
     expect(newUnits).toHaveLength(2);
-    expect(newUnits.find(u => u.number === 1)).toBeUndefined(); // blocked
-    expect(newUnits.find(u => u.number === 2)).toBeTruthy(); // allowed
-    expect(newUnits.find(u => u.number === 3)).toBeUndefined(); // blocked
-    expect(newUnits.find(u => u.number === 4)).toBeTruthy(); // allowed
+    expect(newUnits.find((u) => u.number === 1)).toBeUndefined(); // blocked
+    expect(newUnits.find((u) => u.number === 2)).toBeTruthy(); // allowed
+    expect(newUnits.find((u) => u.number === 3)).toBeUndefined(); // blocked
+    expect(newUnits.find((u) => u.number === 4)).toBeTruthy(); // allowed
 
     // Verify final state
     const currentPlayArea = get(playArea);
     expect(currentPlayArea).toHaveLength(4); // 2 original + 2 new
-    
-    const numbers = currentPlayArea.map(u => u.number).sort();
+
+    const numbers = currentPlayArea.map((u) => u.number).sort();
     expect(numbers).toEqual([1, 2, 3, 4]);
   });
 
@@ -153,8 +149,8 @@ describe('AddPanel - Duplicate Prevention Logic', () => {
 
     const currentPlayArea = get(playArea);
     expect(currentPlayArea).toHaveLength(2);
-    expect(currentPlayArea.filter(u => u.name === 'Ancient Artillery')).toHaveLength(1);
-    expect(currentPlayArea.filter(u => u.name === 'Bandit Guard')).toHaveLength(1);
+    expect(currentPlayArea.filter((u) => u.name === 'Ancient Artillery')).toHaveLength(1);
+    expect(currentPlayArea.filter((u) => u.name === 'Bandit Guard')).toHaveLength(1);
   });
 
   it('should correctly identify existing numbers for a specific monster', () => {
@@ -195,10 +191,10 @@ describe('AddPanel - Duplicate Prevention Logic', () => {
     const levelData = {
       normal: { health: 6, move: 0, attack: 2, range: 4, attributes: [] }
     };
-    
+
     const newUnits2 = simulateAddAction(playArea, 'Ancient Artillery', unitStates, levelData);
     expect(newUnits2).toHaveLength(10);
-    expect(newUnits2.map(u => u.number)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    expect(newUnits2.map((u) => u.number)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   });
 
   it('should maintain data integrity during multiple operations', () => {
@@ -213,21 +209,21 @@ describe('AddPanel - Duplicate Prevention Logic', () => {
     // First addition
     let unitStates = ['normal', null, 'elite', null, null, null, null, null, null, null];
     simulateAddAction(playArea, 'Ancient Artillery', unitStates, levelData);
-    
+
     let currentPlayArea = get(playArea);
     expect(currentPlayArea).toHaveLength(2);
-    expect(currentPlayArea.map(u => u.number).sort()).toEqual([1, 3]);
+    expect(currentPlayArea.map((u) => u.number).sort()).toEqual([1, 3]);
 
     // Second addition - should skip existing numbers
     unitStates = ['elite', 'normal', 'normal', 'elite', null, null, null, null, null, null];
     simulateAddAction(playArea, 'Ancient Artillery', unitStates, levelData);
-    
+
     currentPlayArea = get(playArea);
     expect(currentPlayArea).toHaveLength(4);
-    expect(currentPlayArea.map(u => u.number).sort()).toEqual([1, 2, 3, 4]);
+    expect(currentPlayArea.map((u) => u.number).sort()).toEqual([1, 2, 3, 4]);
 
     // Verify no duplicates exist
-    const numbers = currentPlayArea.map(u => u.number);
+    const numbers = currentPlayArea.map((u) => u.number);
     const uniqueNumbers = [...new Set(numbers)];
     expect(numbers).toEqual(uniqueNumbers);
   });

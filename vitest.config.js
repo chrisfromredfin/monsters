@@ -6,7 +6,20 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['src/setupTests.js'],
-    globals: true
+    globals: true,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html', 'lcov'],
+      exclude: [
+        'node_modules/**',
+        'src/setupTests.js',
+        '**/*.test.js',
+        '**/*.spec.js',
+        '.svelte-kit/**',
+        'build/**',
+        'static/**'
+      ]
+    }
   },
   define: {
     // Fix for Svelte 5 in testing environment

@@ -28,9 +28,11 @@ ddev yarn test:coverage
 ## Test Coverage
 
 ### 1. Duplicate Prevention Logic (`AddPanel.logic.test.js`)
+
 **Purpose**: Prevents regression of the duplicate monster number bug
 
 **Core Scenarios Tested**:
+
 - ✅ Allow adding monsters when no duplicates exist
 - ✅ Prevent adding duplicate monster numbers for same monster type
 - ✅ Handle different monster types independently
@@ -41,9 +43,11 @@ ddev yarn test:coverage
 **Why This Matters**: The original bug allowed users to add multiple monsters with the same number (e.g., two "Ancient Artillery #3" units). These tests ensure this can never happen again.
 
 ### 2. Unit Actions (`unitActions.test.js`)
+
 **Purpose**: Test shared utility functions for unit management
 
 **Scenarios Tested**:
+
 - ✅ Remove units by ID
 - ✅ Adjust HP with bounds checking (0 to max)
 - ✅ Toggle conditions on/off
@@ -52,15 +56,19 @@ ddev yarn test:coverage
 ## Test Strategy
 
 ### Focus on Business Logic
+
 Rather than testing UI rendering (which can be brittle), we focus on testing the core business logic that prevents data corruption and maintains game state integrity.
 
 ### Isolated Unit Tests
+
 Each test file focuses on a specific area of functionality:
+
 - **Logic tests**: Test the core algorithms and business rules
 - **Utility tests**: Test shared helper functions
 - **Integration tests**: Test that different parts work together correctly
 
 ### Regression Prevention
+
 The duplicate prevention tests specifically target the bug that was discovered, ensuring it can never reoccur without failing tests.
 
 ## Test Data Structure
@@ -82,6 +90,7 @@ Tests use realistic monster data structures that match the actual game data:
 ## Continuous Integration
 
 Tests run automatically on:
+
 - Local development (`yarn test`)
 - Build process verification
 - Future CI/CD pipeline integration
