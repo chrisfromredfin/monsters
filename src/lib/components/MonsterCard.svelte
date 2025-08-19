@@ -1,6 +1,8 @@
 <script>
   import { playArea } from '$lib/stores/playArea.js';
   import { iconMap } from '$lib/assets/registry';
+  import Card from '$lib/components/Card.svelte';
+  import '$lib/styles/cards.css';
 
   // Props
   export let unit;
@@ -34,7 +36,7 @@
   }
 </script>
 
-<div class="monster-card {unit.type}">
+<Card className={unit.type}>
   <!-- Remove (top-right) -->
   <button class="remove-btn" aria-label="Remove card" title="Remove" on:click={removeUnit}>
     <!-- same trash icon you used -->
@@ -115,128 +117,7 @@
       <div
         class={`health-fill ${unit.currentHp < 6 ? 'pulse' : ''}`}
         style:width={(unit.currentHp / unit.stats.health) * 100 + '%'}
-      />
+      ></div>
     </div>
   </div>
-</div>
-
-<style>
-  .monster-card {
-    position: relative;
-    border: 2px solid #ccc;
-    padding: 0.5rem;
-    width: 230px;
-    background: #f9f9f9;
-    border-radius: 4px;
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    font-family: 'Roboto Condensed', sans-serif;
-    font-size: 0.95rem;
-  }
-  .monster-card.elite {
-    border-color: gold;
-    background: rgba(255, 215, 0, 0.2);
-  }
-
-  .remove-btn {
-    position: absolute;
-    top: 4px;
-    right: 6px;
-    border: 1px dotted gray;
-    background: white;
-    font-size: 18px;
-    line-height: 1;
-    cursor: pointer;
-    color: #7a3b3b;
-    opacity: 0.6;
-  }
-  .remove-btn:hover {
-    opacity: 1;
-  }
-  .remove-btn:focus-visible {
-    outline: 2px solid #a66;
-    border-radius: 3px;
-  }
-
-  .mar {
-    margin-block: 0.4rem;
-  }
-  .large {
-    font-size: 1.5rem;
-  }
-
-  .hp-controls {
-    margin-top: 4px;
-  }
-  .hp-controls button {
-    margin-right: 0.25rem;
-    width: 1.5rem;
-    height: 1.5rem;
-    font-size: 1rem;
-  }
-
-  .attributes {
-    display: flex;
-    justify-content: space-between;
-  }
-  .attribute-group {
-    display: flex;
-    gap: 0.2rem;
-    align-items: center;
-  }
-
-  .conditions {
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: 0.5rem;
-    gap: 4px;
-  }
-  .conditions button {
-    background-color: transparent;
-    padding: 0;
-    border-color: transparent;
-  }
-  .condition-icon {
-    width: 22px;
-    height: 22px;
-    cursor: pointer;
-    opacity: 0.18;
-    transition: opacity 0.2s ease;
-  }
-  .condition-icon.active {
-    opacity: 1;
-  }
-  .condition-icon.inactive:hover {
-    opacity: 0.6;
-  }
-
-  .health-bar {
-    margin-top: 8px;
-    height: 10px;
-    background-color: #ddd;
-    border-radius: 4px;
-    overflow: hidden;
-    border: 1px solid black;
-  }
-  .health-fill {
-    height: 100%;
-    background-color: maroon;
-    transition: width 0.3s ease;
-  }
-
-  @keyframes pulse-animation {
-    0% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.6;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-  .pulse {
-    animation: pulse-animation 2s ease-in-out infinite;
-  }
-</style>
+</Card>

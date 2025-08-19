@@ -2,6 +2,9 @@
 <script>
   import { playArea } from '$lib/stores/playArea.js';
   import { iconMap } from '$lib/assets/registry';
+  import Card from '$lib/components/Card.svelte';
+  import '$lib/styles/cards.css';
+
   /** @typedef {import('$lib/types').Unit} Unit */
   /** @type {{ unit: Unit }} */
   export let unit;
@@ -32,7 +35,7 @@
   }
 </script>
 
-<div class="monster-card boss">
+<Card className="boss">
   <button class="remove-btn" aria-label="Remove card" title="Remove" on:click={removeUnit}>
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -72,11 +75,11 @@
     {#if unit.bossMeta?.specials?.length}
       <div class="mar">
         <strong>Specials:</strong>
-        <ul>
+        <ol>
           {#each unit.bossMeta.specials as s}
             <li>{s}</li>
           {/each}
-        </ul>
+        </ol>
       </div>
     {/if}
     {#if unit.bossMeta?.notes}
@@ -103,72 +106,14 @@
       <div
         class={`health-fill ${unit.currentHp < 6 ? 'pulse' : ''}`}
         style:width={(unit.currentHp / unit.stats.health) * 100 + '%'}
-      />
+      ></div>
     </div>
   </div>
-</div>
+</Card>
 
 <style>
-  .monster-card {
-    /* reuse your card styles */
-  }
-  .monster-card.boss {
-    border-color: #6b4;
-    background: #f3fff3;
-  }
-  .remove-btn {
-    position: absolute;
-    top: 4px;
-    right: 6px; /* ... */
-  }
-  .large {
-    font-size: 1.5rem;
-  }
-  .mar {
-    margin-block: 0.4rem;
-  }
-  .conditions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-  .condition-icon {
-    width: 22px;
-    height: 22px;
-    opacity: 0.18;
-    transition: opacity 0.2s;
-  }
-  .condition-icon.active {
-    opacity: 1;
-  }
-  .condition-icon.inactive:hover {
-    opacity: 0.6;
-  }
-  .health-bar {
-    margin-top: 8px;
-    height: 10px;
-    background: #ddd;
-    border: 1px solid #000;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  .health-fill {
-    height: 100%;
-    background: maroon;
-    transition: width 0.3s ease;
-  }
-  @keyframes pulse-animation {
-    0% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.6;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-  .pulse {
-    animation: pulse-animation 2s ease-in-out infinite;
+  ol {
+    margin: 0;
+    padding-inline-start: 1.25rem;
   }
 </style>

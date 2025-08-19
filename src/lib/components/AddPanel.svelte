@@ -84,8 +84,11 @@
       bossMeta: {
         healthExpr: String(lvl.health),
         specials: [
-          ...(Array.isArray(lvl.special1) ? lvl.special1 : []),
-          ...(Array.isArray(lvl.special2) ? lvl.special2 : [])
+          (Array.isArray(lvl.special1) ? lvl.special1.join(', ') : '').replace(
+            /\{\{.*?\}\}/g,
+            '🟥'
+          ),
+          (Array.isArray(lvl.special2) ? lvl.special2.join(', ') : '').replace(/\{\{.*?\}\}/g, '🟥')
         ],
         immunities: Array.isArray(lvl.immunities) ? lvl.immunities : [],
         notes: lvl.notes ?? ''
