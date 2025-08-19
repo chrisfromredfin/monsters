@@ -3,6 +3,8 @@
 
 import { playArea } from '$lib/stores/playArea.js';
 
+/** @typedef {import('$lib/types').Unit} Unit */
+
 /**
  * Remove a unit from the play area
  * @param {string} unitId - The ID of the unit to remove
@@ -13,7 +15,7 @@ export function removeUnit(unitId) {
 
 /**
  * Adjust a unit's HP by a delta amount
- * @param {Object} unit - The unit to adjust
+ * @param {Unit} unit - The unit to adjust
  * @param {number} delta - The amount to adjust HP by (positive or negative)
  */
 export function adjustHp(unit, delta) {
@@ -24,7 +26,7 @@ export function adjustHp(unit, delta) {
 
 /**
  * Toggle a condition on a unit
- * @param {Object} unit - The unit to toggle the condition on
+ * @param {Unit} unit - The unit to toggle the condition on
  * @param {string} condition - The condition to toggle
  */
 export function toggleCondition(unit, condition) {
