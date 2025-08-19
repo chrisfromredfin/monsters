@@ -18,7 +18,7 @@ function loadInitial() {
         id: String(u.id ?? crypto?.randomUUID?.() ?? Date.now()),
         name: String(u.name ?? ''),
         number: Number(u.number ?? 1),
-        type: u.type === 'elite' ? 'elite' : 'normal',
+        type: u.type === 'boss' ? 'boss' : u.type === 'elite' ? 'elite' : 'normal',
         stats: {
           health: Number(u.stats?.health ?? 0),
           move: Number(u.stats?.move ?? 0),
@@ -27,7 +27,19 @@ function loadInitial() {
           attributes: Array.isArray(u.stats?.attributes) ? u.stats.attributes : []
         },
         currentHp: Number(u.currentHp ?? u.stats?.health ?? 0),
-        activeConditions: Array.isArray(u.activeConditions) ? u.activeConditions : []
+        activeConditions: Array.isArray(u.activeConditions) ? u.activeConditions : [],
+        bossMeta:
+          u.type === 'boss'
+            ? {
+                healthExpr: String(u.bossMeta?.healthExpr ?? ''),
+                specials: Array.isArray(u.bossMeta?.specials) ? u.bossMeta.specials : [],
+                immunities: Array.isArray(u.bossMeta?.immunities) ? u.bossMeta.immunities : [],
+                // omit notes if empty/undefined
+                ...(typeof u.bossMeta?.notes === 'string' && u.bossMeta.notes
+                  ? { notes: u.bossMeta.notes }
+                  : {})
+              }
+            : undefined
       })
     );
   } catch {
@@ -53,13 +65,28 @@ export const groupedUnits =
       /** @type {Record<string, import('$lib/types').Unit[]>} */
       const byName = {};
       for (const u of arr) (byName[u.name] ||= []).push(u);
-      for (const k in byName)
-        byName[k].sort((a, b) => {
-          // elites first
-          if (a.type !== b.type) return a.type === 'elite' ? -1 : 1;
-          // then ascending by number
-          return a.number - b.number;
-        });
-      return Object.values(byName);
+
+      // Sort within each non-boss group: elite first, then number asc
+      for (const k in byName) {
+        const group = byName[k];
+        const isBossGroup = group.length === 1 && group[0].type === 'boss';
+        if (!isBossGroup) {
+          group.sort((a, b) => {
+            if (a.type !== b.type) return a.type === 'elite' ? -1 : 1;
+            return a.number - b.number;
+          });
+        }
+      }
+
+      // Sort groups: boss groups last; tie-breaker by name for stability
+      const groups = Object.values(byName);
+      groups.sort((g1, g2) => {
+        const b1 = g1.length === 1 && g1[0].type === 'boss';
+        const b2 = g2.length === 1 && g2[0].type === 'boss';
+        if (b1 !== b2) return b1 ? 1 : -1;
+        return g1[0].name.localeCompare(g2[0].name);
+      });
+
+      return groups;
     })
   );

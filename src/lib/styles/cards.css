@@ -1,0 +1,121 @@
+.remove-btn {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  border: 1px dotted gray;
+  background: white;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  color: #7a3b3b;
+  opacity: 0.6;
+}
+.remove-btn:hover {
+  opacity: 1;
+}
+.remove-btn:focus-visible {
+  outline: 2px solid #a66;
+  border-radius: 3px;
+}
+
+.mar {
+  margin-block: 0.4rem;
+}
+.large {
+  font-size: 1.5rem;
+}
+
+.hp-controls {
+  margin-top: 4px;
+}
+.hp-controls button {
+  margin-right: 0.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 1rem;
+}
+
+.attributes {
+  display: flex;
+  justify-content: space-between;
+}
+.attribute-group {
+  display: flex;
+  gap: 0.2rem;
+  align-items: center;
+}
+
+.conditions {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+  gap: 4px;
+}
+.conditions button {
+  background-color: transparent;
+  padding: 0;
+  border-color: transparent;
+}
+.condition-icon {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  opacity: 0.18;
+  transition: opacity 0.2s ease;
+}
+.condition-icon.active {
+  opacity: 1;
+}
+.condition-icon.inactive:hover {
+  opacity: 0.6;
+}
+
+.health-bar {
+  margin-top: 8px;
+  height: 10px;
+  background-color: #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid black;
+}
+.health-fill {
+  height: 100%;
+  background-color: maroon;
+  transition: width 0.3s ease;
+}
+
+@keyframes pulse-animation {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.pulse {
+  animation: pulse-animation 2s ease-in-out infinite;
+}
+
+/* disabled condition buttons */
+.monster-card.boss .conditions button:disabled img {
+  cursor: not-allowed;
+  opacity: 0.1;
+}
+
+.monster-card.boss .condition-button.immune {
+  position: relative;
+  z-index: 1;
+}
+
+.monster-card.boss .condition-button.immune::before {
+  content: '❌';
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  opacity: 1;
+}

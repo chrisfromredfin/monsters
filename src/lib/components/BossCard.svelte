@@ -1,5 +1,5 @@
+<!-- src/lib/components/BossCard.svelte -->
 <script>
-import { iconMap } from '$lib/assets/registry';
   import Card from '$lib/components/Card.svelte';
   import RemoveButton from '$lib/components/RemoveButton.svelte';
   import HpControls from '$lib/components/HpControls.svelte';
@@ -9,7 +9,8 @@ import { iconMap } from '$lib/assets/registry';
   import { removeUnit, adjustHp, toggleCondition } from '$lib/utils/unitActions.js';
   import '$lib/styles/cards.css';
 
-  // Props
+  /** @typedef {import('$lib/types').Unit} Unit */
+  /** @type {{ unit: Unit }} */
   export let unit;
 
   function handleRemove() {
@@ -25,12 +26,11 @@ import { iconMap } from '$lib/assets/registry';
   }
 </script>
 
-<Card className={unit.type}>
-  <!-- Remove (top-right) -->
+<Card className="boss">
   <RemoveButton on:remove={handleRemove} />
 
   <div class="top">
-    <div><strong class="large">#{unit.number}</strong> ({unit.type})</div>
+    <div><strong class="large">{unit.name}</strong> (Boss)</div>
 
     <HpControls 
       currentHp={unit.currentHp} 
@@ -44,35 +44,28 @@ import { iconMap } from '$lib/assets/registry';
       range={unit.stats.range} 
     />
 
-    {#if unit.stats.attributes.length > 0}
-      <strong>Attributes</strong>:<br />
-      <div class="attributes">
-        {#each unit.stats.attributes as attr}
-          {@const iconKey = attr.split(' ')[0]?.toLowerCase()}
-          {@const attrValue = attr.split(' ')[1]?.toLowerCase()}
-          {#if iconMap[iconKey]}
-            <span class="attribute-group">
-              <img
-                src={iconMap[iconKey]}
-                width="16"
-                height="16"
-                alt={attr}
-                title={attr}
-                class="attribute-icon"
-              />
-              {attrValue}
-            </span>
-          {:else}
-            <span>{attr}</span>
-          {/if}
-        {/each}
+    {#if unit.bossMeta?.immunities?.length}
+      <div class="mar"><strong>Immunities:</strong> {unit.bossMeta.immunities.join(', ')}</div>
+    {/if}
+    {#if unit.bossMeta?.specials?.length}
+      <div class="mar">
+        <strong>Specials:</strong>
+        <ol>
+          {#each unit.bossMeta.specials as s}
+            <li>{s}</li>
+          {/each}
+        </ol>
       </div>
+    {/if}
+    {#if unit.bossMeta?.notes}
+      <div class="mar"><em>{unit.bossMeta.notes}</em></div>
     {/if}
   </div>
 
   <div class="bottom">
     <ConditionsDisplay 
       activeConditions={unit.activeConditions ?? []} 
+      immunities={unit.bossMeta?.immunities ?? []}
       on:toggle={handleConditionToggle} 
     />
     
@@ -82,3 +75,10 @@ import { iconMap } from '$lib/assets/registry';
     />
   </div>
 </Card>
+
+<style>
+  ol {
+    margin: 0;
+    padding-inline-start: 1.25rem;
+  }
+</style>

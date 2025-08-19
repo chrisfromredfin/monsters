@@ -2,10 +2,15 @@
   import { createEventDispatcher } from 'svelte';
   import { playArea } from '$lib/stores/playArea.js';
   import { scenarioLevel } from '$lib/stores/scenarioLevel.js';
+  import { computeBossHealth } from '$lib/boss-helpers.js';
 
   // Props from parent
   export let data; // the big JSON (monsters, levels...)
   export let monsterNames = []; // list of names for the <select>
+  const bossNames = Object.keys(data.bosses ?? {});
+  let selectedBoss = bossNames[0] ?? '';
+  let partyCount = 4; // default; let the user change this
+  let addingBoss = false; // e.g., a checkbox or separate button mode
 
   const dispatch = createEventDispatcher();
 
@@ -49,6 +54,50 @@
 
     // Let parent know we added something (so it can auto-collapse)
     dispatch('added');
+  }
+
+  function addBoss() {
+    if (!$scenarioLevel || !selectedBoss) return;
+
+    const boss = data.bosses[selectedBoss];
+    // find the level block that matches the scenario level
+    const lvl = boss.level.find((l) => l.level === +$scenarioLevel);
+    if (!lvl) return;
+
+    // health is an expression like "10xC"
+    const hp = computeBossHealth(String(lvl.health), partyCount);
+
+    const id = crypto?.randomUUID?.() ?? `${selectedBoss}-boss-${Date.now()}`;
+    const unit = {
+      id,
+      name: selectedBoss,
+      number: 1, // typically single boss; keep 1
+      type: 'boss',
+      currentHp: hp,
+      stats: {
+        health: hp,
+        move: Number(lvl.move ?? 0),
+        attack: Number(lvl.attack ?? 0),
+        range: Number(lvl.range ?? 0)
+      },
+      activeConditions: [],
+      bossMeta: {
+        healthExpr: String(lvl.health),
+        specials: [
+          (Array.isArray(lvl.special1) ? lvl.special1.join(', ') : '').replace(
+            /\{\{.*?\}\}/g,
+            '🟥'
+          ),
+          (Array.isArray(lvl.special2) ? lvl.special2.join(', ') : '').replace(/\{\{.*?\}\}/g, '🟥')
+        ],
+        immunities: Array.isArray(lvl.immunities) ? lvl.immunities : [],
+        notes: lvl.notes ?? ''
+      }
+    };
+
+    playArea.update((old) => [...old, unit]);
+    // optionally close the panel or leave it open
+    // dispatch('added') if you want the parent to collapse, etc.
   }
 </script>
 
@@ -103,6 +152,28 @@
   </table>
 
   <button on:click={handleAdd} disabled={!selectedMonster}>Add</button>
+
+  <div class="boss-adder">
+    <label>
+      <input type="checkbox" bind:checked={addingBoss} />
+      Add Boss
+    </label>
+
+    {#if addingBoss}
+      <div>
+        <select bind:value={selectedBoss}>
+          {#each bossNames as b}<option value={b}>{b}</option>{/each}
+        </select>
+
+        <label
+          >Party size (C):
+          <input type="number" min="1" max="6" bind:value={partyCount} />
+        </label>
+
+        <button on:click={addBoss} disabled={!selectedBoss}>Add Boss</button>
+      </div>
+    {/if}
+  </div>
 {/if}
 
 <style>
