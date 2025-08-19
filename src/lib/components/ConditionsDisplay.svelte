@@ -25,7 +25,8 @@
 <div class="conditions">
   {#each CONDITIONS as condition (condition)}
     {@const isActive = activeConditions.includes(condition)}
-    {@const immunityKey = (IMMUNITY_MAP[/** @type {keyof typeof IMMUNITY_MAP} */ (condition)] ?? condition).toLowerCase()}
+    {@const immunityMapping = IMMUNITY_MAP[/** @type {keyof typeof IMMUNITY_MAP} */ (condition)]}
+    {@const immunityKey = (immunityMapping ?? condition).toLowerCase()}
     {@const isImmune = immuneSet.has(immunityKey)}
 
     <button

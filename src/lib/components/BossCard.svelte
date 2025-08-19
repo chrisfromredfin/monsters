@@ -10,7 +10,7 @@
   import '$lib/styles/cards.css';
 
   /** @typedef {import('$lib/types').Unit} Unit */
-  
+
   // Props
   /** @type {Unit} */
   export let unit;

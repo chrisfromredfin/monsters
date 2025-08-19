@@ -10,7 +10,7 @@
   import '$lib/styles/cards.css';
 
   /** @typedef {import('$lib/types').Unit} Unit */
-  
+
   // Props
   /** @type {Unit} */
   export let unit;
@@ -49,22 +49,23 @@
       <strong>Attributes</strong>:<br />
       <div class="attributes">
         {#each unit.stats.attributes as attr (attr)}
-          {@const iconKey = /** @type {string} */ (attr).split(' ')[0]?.toLowerCase()}
-          {@const attrValue = /** @type {string} */ (attr).split(' ')[1]?.toLowerCase()}
+          {@const attrStr = String(attr)}
+          {@const iconKey = attrStr.split(' ')[0]?.toLowerCase()}
+          {@const attrValue = attrStr.split(' ')[1]?.toLowerCase()}
           {#if iconMap[iconKey]}
             <span class="attribute-group">
               <img
                 src={iconMap[iconKey]}
                 width="16"
                 height="16"
-                alt={/** @type {string} */ (attr)}
-                title={/** @type {string} */ (attr)}
+                alt={attrStr}
+                title={attrStr}
                 class="attribute-icon"
               />
               {attrValue}
             </span>
           {:else}
-            <span>{/** @type {string} */ (attr)}</span>
+            <span>{attrStr}</span>
           {/if}
         {/each}
       </div>
