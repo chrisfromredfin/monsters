@@ -21,12 +21,10 @@
  *   id: string;
  *   name: string;
  *   number: number;
- *   // 'normal' | 'elite' for monsters; 'boss' for bosses
  *   type: 'normal' | 'elite' | 'boss';
  *   currentHp: number;
  *   stats: StatLine;
  *   activeConditions: string[];
- *   // present only when type === 'boss'
  *   bossMeta?: BossMeta;
  * }} Unit
  */

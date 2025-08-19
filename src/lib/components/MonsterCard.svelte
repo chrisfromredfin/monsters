@@ -9,17 +9,26 @@
   import { removeUnit, adjustHp, toggleCondition } from '$lib/utils/unitActions.js';
   import '$lib/styles/cards.css';
 
+  /** @typedef {import('$lib/types').Unit} Unit */
+  
   // Props
+  /** @type {Unit} */
   export let unit;
 
   function handleRemove() {
     removeUnit(unit.id);
   }
 
+  /**
+   * @param {CustomEvent<{delta: number}>} event
+   */
   function handleHpAdjust(event) {
     adjustHp(unit, event.detail.delta);
   }
 
+  /**
+   * @param {CustomEvent<{condition: string}>} event
+   */
   function handleConditionToggle(event) {
     toggleCondition(unit, event.detail.condition);
   }
@@ -36,26 +45,26 @@
 
     <StatsDisplay move={unit.stats.move} attack={unit.stats.attack} range={unit.stats.range} />
 
-    {#if unit.stats.attributes.length > 0}
+    {#if unit.stats.attributes && unit.stats.attributes.length > 0}
       <strong>Attributes</strong>:<br />
       <div class="attributes">
         {#each unit.stats.attributes as attr (attr)}
-          {@const iconKey = attr.split(' ')[0]?.toLowerCase()}
-          {@const attrValue = attr.split(' ')[1]?.toLowerCase()}
+          {@const iconKey = /** @type {string} */ (attr).split(' ')[0]?.toLowerCase()}
+          {@const attrValue = /** @type {string} */ (attr).split(' ')[1]?.toLowerCase()}
           {#if iconMap[iconKey]}
             <span class="attribute-group">
               <img
                 src={iconMap[iconKey]}
                 width="16"
                 height="16"
-                alt={attr}
-                title={attr}
+                alt={/** @type {string} */ (attr)}
+                title={/** @type {string} */ (attr)}
                 class="attribute-icon"
               />
               {attrValue}
             </span>
           {:else}
-            <span>{attr}</span>
+            <span>{/** @type {string} */ (attr)}</span>
           {/if}
         {/each}
       </div>
