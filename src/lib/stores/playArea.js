@@ -66,20 +66,27 @@ export const groupedUnits =
       const byName = {};
       for (const u of arr) (byName[u.name] ||= []).push(u);
 
+      // Sort within each non-boss group: elite first, then number asc
       for (const k in byName) {
-        byName[k].sort((a, b) => {
-          // bosses always last
-          if (a.type === 'boss' && b.type !== 'boss') return 1;
-          if (b.type === 'boss' && a.type !== 'boss') return -1;
-
-          // elites before normals
-          if (a.type !== b.type) return a.type === 'elite' ? -1 : 1;
-
-          // then ascending by number
-          return a.number - b.number;
-        });
+        const group = byName[k];
+        const isBossGroup = group.length === 1 && group[0].type === 'boss';
+        if (!isBossGroup) {
+          group.sort((a, b) => {
+            if (a.type !== b.type) return a.type === 'elite' ? -1 : 1;
+            return a.number - b.number;
+          });
+        }
       }
 
-      return Object.values(byName);
+      // Sort groups: boss groups last; tie-breaker by name for stability
+      const groups = Object.values(byName);
+      groups.sort((g1, g2) => {
+        const b1 = g1.length === 1 && g1[0].type === 'boss';
+        const b2 = g2.length === 1 && g2[0].type === 'boss';
+        if (b1 !== b2) return b1 ? 1 : -1;
+        return g1[0].name.localeCompare(g2[0].name);
+      });
+
+      return groups;
     })
   );
