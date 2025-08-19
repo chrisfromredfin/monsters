@@ -32,17 +32,9 @@
   <div class="top">
     <div><strong class="large">{unit.name}</strong> (Boss)</div>
 
-    <HpControls 
-      currentHp={unit.currentHp} 
-      maxHp={unit.stats.health} 
-      on:adjust={handleHpAdjust} 
-    />
+    <HpControls currentHp={unit.currentHp} maxHp={unit.stats.health} on:adjust={handleHpAdjust} />
 
-    <StatsDisplay 
-      move={unit.stats.move} 
-      attack={unit.stats.attack} 
-      range={unit.stats.range} 
-    />
+    <StatsDisplay move={unit.stats.move} attack={unit.stats.attack} range={unit.stats.range} />
 
     {#if unit.bossMeta?.immunities?.length}
       <div class="mar"><strong>Immunities:</strong> {unit.bossMeta.immunities.join(', ')}</div>
@@ -51,7 +43,7 @@
       <div class="mar">
         <strong>Specials:</strong>
         <ol>
-          {#each unit.bossMeta.specials as s}
+          {#each unit.bossMeta.specials as s, i (i)}
             <li>{s}</li>
           {/each}
         </ol>
@@ -63,16 +55,13 @@
   </div>
 
   <div class="bottom">
-    <ConditionsDisplay 
-      activeConditions={unit.activeConditions ?? []} 
+    <ConditionsDisplay
+      activeConditions={unit.activeConditions ?? []}
       immunities={unit.bossMeta?.immunities ?? []}
-      on:toggle={handleConditionToggle} 
+      on:toggle={handleConditionToggle}
     />
-    
-    <HealthBar 
-      currentHp={unit.currentHp} 
-      maxHp={unit.stats.health} 
-    />
+
+    <HealthBar currentHp={unit.currentHp} maxHp={unit.stats.health} />
   </div>
 </Card>
 

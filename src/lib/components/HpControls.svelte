@@ -1,12 +1,12 @@
 <!-- src/lib/components/HpControls.svelte -->
 <script>
   import { createEventDispatcher } from 'svelte';
-  
+
   export let currentHp;
   export let maxHp;
-  
+
   const dispatch = createEventDispatcher();
-  
+
   function adjustHp(delta) {
     dispatch('adjust', { delta });
   }

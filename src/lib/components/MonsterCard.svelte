@@ -1,5 +1,5 @@
 <script>
-import { iconMap } from '$lib/assets/registry';
+  import { iconMap } from '$lib/assets/registry';
   import Card from '$lib/components/Card.svelte';
   import RemoveButton from '$lib/components/RemoveButton.svelte';
   import HpControls from '$lib/components/HpControls.svelte';
@@ -32,22 +32,14 @@ import { iconMap } from '$lib/assets/registry';
   <div class="top">
     <div><strong class="large">#{unit.number}</strong> ({unit.type})</div>
 
-    <HpControls 
-      currentHp={unit.currentHp} 
-      maxHp={unit.stats.health} 
-      on:adjust={handleHpAdjust} 
-    />
+    <HpControls currentHp={unit.currentHp} maxHp={unit.stats.health} on:adjust={handleHpAdjust} />
 
-    <StatsDisplay 
-      move={unit.stats.move} 
-      attack={unit.stats.attack} 
-      range={unit.stats.range} 
-    />
+    <StatsDisplay move={unit.stats.move} attack={unit.stats.attack} range={unit.stats.range} />
 
     {#if unit.stats.attributes.length > 0}
       <strong>Attributes</strong>:<br />
       <div class="attributes">
-        {#each unit.stats.attributes as attr}
+        {#each unit.stats.attributes as attr (attr)}
           {@const iconKey = attr.split(' ')[0]?.toLowerCase()}
           {@const attrValue = attr.split(' ')[1]?.toLowerCase()}
           {#if iconMap[iconKey]}
@@ -71,14 +63,11 @@ import { iconMap } from '$lib/assets/registry';
   </div>
 
   <div class="bottom">
-    <ConditionsDisplay 
-      activeConditions={unit.activeConditions ?? []} 
-      on:toggle={handleConditionToggle} 
+    <ConditionsDisplay
+      activeConditions={unit.activeConditions ?? []}
+      on:toggle={handleConditionToggle}
     />
-    
-    <HealthBar 
-      currentHp={unit.currentHp} 
-      maxHp={unit.stats.health} 
-    />
+
+    <HealthBar currentHp={unit.currentHp} maxHp={unit.stats.health} />
   </div>
 </Card>

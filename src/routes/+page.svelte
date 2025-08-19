@@ -52,7 +52,7 @@ Scenario Level:
   }}
 >
   <option value="">-Choose-</option>
-  {#each [1, 2, 3, 4, 5, 6, 7] as level}
+  {#each [1, 2, 3, 4, 5, 6, 7] as level (level)}
     <option value={level}>{level}</option>
   {/each}
 </select>
@@ -66,7 +66,7 @@ Scenario Level:
 {#if $playArea.length > 0}
   <h2>Monsters</h2>
   <div class="play-area">
-    {#each $groupedUnits as group}
+    {#each $groupedUnits as group (group[0].name)}
       <div class="monster-group">
         <h3>
           {#if monsterImageMap[`Horz-${group[0].name}`]}

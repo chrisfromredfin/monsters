@@ -1,22 +1,16 @@
 <!-- src/lib/components/RemoveButton.svelte -->
 <script>
   import { createEventDispatcher } from 'svelte';
-  
+
   const dispatch = createEventDispatcher();
-  
+
   function handleClick() {
     dispatch('remove');
   }
 </script>
 
 <button class="remove-btn" aria-label="Remove card" title="Remove" on:click={handleClick}>
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="16"
-    height="16"
-    fill="none"
-    viewBox="-0.5 0 25 25"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="-0.5 0 25 25">
     <path
       stroke="#0F0F0F"
       stroke-linecap="round"
