@@ -19,6 +19,18 @@
     'disarmed'
   ];
 
+  const IMMUNITY_MAP = {
+    muddled: 'muddle',
+    poisoned: 'poison',
+    wounded: 'wound',
+    stunned: 'stun',
+    immobilized: 'immobilize',
+    disarmed: 'disarm'
+    // strengthened has no immunity counterpart
+  };
+  // Normalize boss immunities to lowercase set for fast lookup
+  const immuneSet = new Set((unit.bossMeta?.immunities ?? []).map((s) => s.toLowerCase()));
+
   function removeUnit() {
     playArea.update((arr) => arr.filter((u) => u.id !== unit.id));
   }
@@ -91,12 +103,21 @@
     <div class="conditions">
       {#each CONDITIONS as condition}
         {@const isActive = (unit.activeConditions ?? []).includes(condition)}
-        <button on:click={() => toggleCondition(condition)} aria-pressed={isActive}>
+        {@const immunityKey = (IMMUNITY_MAP[condition] ?? condition).toLowerCase()}
+        {@const isImmune = immuneSet.has(immunityKey)}
+
+        <button
+          on:click={() => toggleCondition(condition)}
+          aria-pressed={isActive}
+          disabled={isImmune}
+          title={isImmune ? `Immune to ${condition}` : condition}
+          class="condition-button {isImmune ? 'immune' : isActive ? 'active' : 'inactive'}"
+        >
           <img
             src={iconMap[condition]}
             alt={condition}
             title={condition}
-            class="condition-icon {isActive ? 'active' : 'inactive'}"
+            class="condition-icon {isImmune ? 'immune' : isActive ? 'active' : 'inactive'}"
           />
         </button>
       {/each}

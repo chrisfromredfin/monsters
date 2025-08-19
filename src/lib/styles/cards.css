@@ -98,3 +98,24 @@
 .pulse {
   animation: pulse-animation 2s ease-in-out infinite;
 }
+
+/* disabled condition buttons */
+.monster-card.boss .conditions button:disabled img {
+  cursor: not-allowed;
+  opacity: 0.1;
+}
+
+.monster-card.boss .condition-button.immune {
+  position: relative;
+  z-index: 1;
+}
+
+.monster-card.boss .condition-button.immune::before {
+  content: '❌';
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  opacity: 1;
+}
