@@ -8,7 +8,6 @@
 
   export let data;
   const monsterNames = Object.keys(data.monsters);
-  const bossNames = Object.keys(data.bosses);
 
   /** @type {number|null} */
   let selectedLevel = null;
@@ -42,7 +41,8 @@ Scenario Level:
   bind:value={selectedLevel}
   name="level"
   on:change={(e) => {
-    const newLevel = +e.target.value;
+    const target = /** @type {HTMLSelectElement} */ (e.target);
+    const newLevel = +target.value;
     if ($playArea.length > 0 && newLevel !== $scenarioLevel) {
       alert('Changing scenario level requires starting over.');
       selectedLevel = $scenarioLevel ?? ''; // Revert UI
@@ -60,7 +60,7 @@ Scenario Level:
 
 <details class="add-monsters" bind:open={addPanelOpen}>
   <summary>Add Monsters</summary>
-  <AddPanel {data} {monsterNames} {bossNames} />
+  <AddPanel {data} {monsterNames} />
 </details>
 
 {#if $playArea.length > 0}
@@ -129,12 +129,6 @@ Scenario Level:
     align-items: center;
     gap: 6px;
     font-size: 1.25rem;
-  }
-
-  /* Stats and tables stay readable */
-  table {
-    font-family: 'Roboto Condensed', sans-serif;
-    font-size: 0.95rem;
   }
 
   /* give the headings a slightly warmer dark color */

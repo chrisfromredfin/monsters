@@ -4,7 +4,9 @@
   import { iconMap } from '$lib/assets/registry';
   import { CONDITIONS, IMMUNITY_MAP } from '$lib/constants.js';
 
+  /** @type {string[]} */
   export let activeConditions = [];
+  /** @type {string[]} */
   export let immunities = []; // Array of immunities for bosses
 
   const dispatch = createEventDispatcher();
@@ -12,6 +14,9 @@
   // Normalize immunities to lowercase set for fast lookup
   const immuneSet = new Set(immunities.map((s) => s.toLowerCase()));
 
+  /**
+   * @param {string} condition
+   */
   function toggleCondition(condition) {
     dispatch('toggle', { condition });
   }
@@ -20,7 +25,8 @@
 <div class="conditions">
   {#each CONDITIONS as condition (condition)}
     {@const isActive = activeConditions.includes(condition)}
-    {@const immunityKey = (IMMUNITY_MAP[condition] ?? condition).toLowerCase()}
+    {@const immunityMapping = IMMUNITY_MAP[/** @type {keyof typeof IMMUNITY_MAP} */ (condition)]}
+    {@const immunityKey = (immunityMapping ?? condition).toLowerCase()}
     {@const isImmune = immuneSet.has(immunityKey)}
 
     <button

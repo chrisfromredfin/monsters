@@ -3,6 +3,8 @@ import { get } from 'svelte/store';
 import { playArea } from '$lib/stores/playArea.js';
 import { removeUnit, adjustHp, toggleCondition } from './unitActions.js';
 
+/** @typedef {import('$lib/types').Unit} Unit */
+
 describe('Unit Actions', () => {
   beforeEach(() => {
     // Clear the play area before each test
@@ -12,7 +14,8 @@ describe('Unit Actions', () => {
   describe('removeUnit', () => {
     it('should remove a unit by ID', () => {
       // Set up test data
-      playArea.set([
+      /** @type {Unit[]} */
+      const testUnits = [
         {
           id: 'unit-1',
           name: 'Ancient Artillery',
@@ -31,7 +34,8 @@ describe('Unit Actions', () => {
           currentHp: 9,
           activeConditions: []
         }
-      ]);
+      ];
+      playArea.set(testUnits);
 
       // Remove unit-1
       removeUnit('unit-1');
@@ -44,7 +48,8 @@ describe('Unit Actions', () => {
 
     it('should not affect other units when removing non-existent ID', () => {
       // Set up test data
-      playArea.set([
+      /** @type {Unit[]} */
+      const testUnits = [
         {
           id: 'unit-1',
           name: 'Ancient Artillery',
@@ -54,7 +59,8 @@ describe('Unit Actions', () => {
           currentHp: 6,
           activeConditions: []
         }
-      ]);
+      ];
+      playArea.set(testUnits);
 
       // Try to remove non-existent unit
       removeUnit('non-existent');
@@ -68,6 +74,7 @@ describe('Unit Actions', () => {
 
   describe('adjustHp', () => {
     it('should increase HP when given positive delta', () => {
+      /** @type {Unit} */
       const unit = {
         id: 'unit-1',
         name: 'Ancient Artillery',
@@ -89,6 +96,7 @@ describe('Unit Actions', () => {
     });
 
     it('should decrease HP when given negative delta', () => {
+      /** @type {Unit} */
       const unit = {
         id: 'unit-1',
         name: 'Ancient Artillery',
@@ -110,6 +118,7 @@ describe('Unit Actions', () => {
     });
 
     it('should not allow HP to go below 0', () => {
+      /** @type {Unit} */
       const unit = {
         id: 'unit-1',
         name: 'Ancient Artillery',
@@ -131,6 +140,7 @@ describe('Unit Actions', () => {
     });
 
     it('should not allow HP to go above max health', () => {
+      /** @type {Unit} */
       const unit = {
         id: 'unit-1',
         name: 'Ancient Artillery',
@@ -154,6 +164,7 @@ describe('Unit Actions', () => {
 
   describe('toggleCondition', () => {
     it('should add condition when not present', () => {
+      /** @type {Unit} */
       const unit = {
         id: 'unit-1',
         name: 'Ancient Artillery',
@@ -175,6 +186,7 @@ describe('Unit Actions', () => {
     });
 
     it('should remove condition when already present', () => {
+      /** @type {Unit} */
       const unit = {
         id: 'unit-1',
         name: 'Ancient Artillery',
@@ -197,6 +209,7 @@ describe('Unit Actions', () => {
     });
 
     it('should handle multiple condition toggles correctly', () => {
+      /** @type {Unit} */
       const unit = {
         id: 'unit-1',
         name: 'Ancient Artillery',
@@ -226,14 +239,15 @@ describe('Unit Actions', () => {
     });
 
     it('should handle unit with no activeConditions array', () => {
+      /** @type {Unit} */
       const unit = {
         id: 'unit-1',
         name: 'Ancient Artillery',
         number: 1,
         type: 'normal',
         stats: { health: 6, move: 0, attack: 2, range: 4, attributes: [] },
-        currentHp: 6
-        // No activeConditions property
+        currentHp: 6,
+        activeConditions: []
       };
 
       playArea.set([unit]);
@@ -251,6 +265,7 @@ describe('Unit Actions', () => {
     it('should maintain number uniqueness constraint', () => {
       // This test verifies that our duplicate prevention logic works
       // by ensuring we cannot create units with the same name and number
+      /** @type {Unit[]} */
       const existingUnits = [
         {
           id: 'unit-1',
