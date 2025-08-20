@@ -12,7 +12,7 @@ import { scenarioLevel } from '$lib/stores/scenarioLevel.js';
  */
 
 describe('Start Over Functionality Logic', () => {
-  /** @type {Storage} */
+  /** @type {any} */
   let mockLocalStorage;
 
   beforeEach(() => {
@@ -29,7 +29,10 @@ describe('Start Over Functionality Logic', () => {
       }),
       clear: vi.fn(() => {
         mockLocalStorage.store = {};
-      })
+      }),
+      // Add missing Storage interface properties
+      length: 0,
+      key: vi.fn(() => null)
     };
 
     // Replace global localStorage
@@ -38,7 +41,8 @@ describe('Start Over Functionality Logic', () => {
       writable: true
     });
 
-    // Mock window.confirm
+    // Mock window.confirm with proper typing
+    // @ts-ignore
     window.confirm = vi.fn();
 
     // Reset stores to clean state
@@ -57,7 +61,7 @@ describe('Start Over Functionality Logic', () => {
    */
   function simulateResetGame(userConfirms) {
     // Mock the confirm dialog
-    window.confirm.mockReturnValue(userConfirms);
+    /** @type {any} */ (window.confirm).mockReturnValue(userConfirms);
 
     const confirmed = window.confirm(
       'Are you sure you want to start over? This will clear all added monsters.'

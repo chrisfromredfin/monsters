@@ -64,16 +64,17 @@ Scenario Level:
 <hr />
 
 <div class="add-monsters" class:open={addPanelOpen}>
-  <div
+  <button
     class="summary"
-    tabindex="0"
+    type="button"
+    aria-expanded={addPanelOpen}
+    aria-controls="add-panel-content"
     on:click={toggleAddPanel}
-    on:keydown={(e) => e.key === 'Enter' && toggleAddPanel()}
   >
-    <span class="arrow" class:open={addPanelOpen}>▶</span>
+    <span class="arrow" class:open={addPanelOpen} aria-hidden="true">▶</span>
     Add Monsters
-  </div>
-  <div class="details-content">
+  </button>
+  <div class="details-content" id="add-panel-content">
     <div class="details-inner">
       <AddPanel {data} {monsterNames} />
     </div>
@@ -168,11 +169,16 @@ Scenario Level:
   }
 
   .add-monsters .summary {
+    width: 100%;
     padding: 0.375rem;
     background: #f8f9fa;
+    border: none;
     cursor: pointer;
     user-select: none;
     font-weight: bold;
+    font-size: inherit;
+    font-family: inherit;
+    text-align: left;
     transition: background-color 0.2s ease;
     display: flex;
     align-items: center;
