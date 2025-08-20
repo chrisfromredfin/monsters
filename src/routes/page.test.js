@@ -14,7 +14,7 @@ import { scenarioLevel } from '$lib/stores/scenarioLevel.js';
 describe('Start Over Functionality Logic', () => {
   /** @type {Storage} */
   let mockLocalStorage;
-  
+
   beforeEach(() => {
     // Mock localStorage
     mockLocalStorage = {
@@ -58,9 +58,11 @@ describe('Start Over Functionality Logic', () => {
   function simulateResetGame(userConfirms) {
     // Mock the confirm dialog
     window.confirm.mockReturnValue(userConfirms);
-    
-    const confirmed = window.confirm('Are you sure you want to start over? This will clear all added monsters.');
-    
+
+    const confirmed = window.confirm(
+      'Are you sure you want to start over? This will clear all added monsters.'
+    );
+
     if (confirmed) {
       localStorage.removeItem('playArea');
       localStorage.removeItem('scenarioLevel');
@@ -68,7 +70,7 @@ describe('Start Over Functionality Logic', () => {
       scenarioLevel.set(null);
       return true;
     }
-    
+
     return false;
   }
 
@@ -211,7 +213,7 @@ describe('Start Over Functionality Logic', () => {
 
     // Simulate reset (should still work even with empty state)
     const resetWasPerformed = simulateResetGame(true);
-    
+
     expect(resetWasPerformed).toBe(true);
     expect(window.confirm).toHaveBeenCalled();
 
@@ -268,14 +270,14 @@ describe('Start Over Functionality Logic', () => {
     // Verify complex initial state
     expect(get(playArea)).toHaveLength(3);
     expect(get(scenarioLevel)).toBe(7);
-    
+
     const initialPlayArea = get(playArea);
-    expect(initialPlayArea.find(u => u.type === 'boss')).toBeTruthy();
-    expect(initialPlayArea.find(u => u.activeConditions.includes('poisoned'))).toBeTruthy();
+    expect(initialPlayArea.find((u) => u.type === 'boss')).toBeTruthy();
+    expect(initialPlayArea.find((u) => u.activeConditions.includes('poisoned'))).toBeTruthy();
 
     // Perform reset
     const resetWasPerformed = simulateResetGame(true);
-    
+
     expect(resetWasPerformed).toBe(true);
 
     // Verify everything is completely cleared
