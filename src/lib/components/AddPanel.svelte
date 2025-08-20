@@ -37,29 +37,31 @@
     if (!levelData) return;
 
     const now = Date.now();
-    const newUnits = /** @type {Unit[]} */ (unitStates
-      .map((type, i) => {
-        if (!type) return null;
+    const newUnits = /** @type {Unit[]} */ (
+      unitStates
+        .map((type, i) => {
+          if (!type) return null;
 
-        const number = i + 1;
-        // Skip if this number already exists for this monster
-        if (existingNumbers.has(number)) return null;
+          const number = i + 1;
+          // Skip if this number already exists for this monster
+          if (existingNumbers.has(number)) return null;
 
-        const id = crypto?.randomUUID?.() ?? `${selectedMonster}-${type}-${number}-${now}`;
-        const stats = levelData[type];
-        /** @type {Unit} */
-        const unit = {
-          id,
-          number,
-          type: /** @type {'normal' | 'elite' | 'boss'} */ (type),
-          stats,
-          name: selectedMonster,
-          currentHp: stats.health,
-          activeConditions: []
-        };
-        return unit;
-      })
-      .filter(Boolean));
+          const id = crypto?.randomUUID?.() ?? `${selectedMonster}-${type}-${number}-${now}`;
+          const stats = levelData[type];
+          /** @type {Unit} */
+          const unit = {
+            id,
+            number,
+            type: /** @type {'normal' | 'elite' | 'boss'} */ (type),
+            stats,
+            name: selectedMonster,
+            currentHp: stats.health,
+            activeConditions: []
+          };
+          return unit;
+        })
+        .filter(Boolean)
+    );
 
     if (newUnits.length === 0) return;
 

@@ -131,7 +131,6 @@ Scenario Level:
     font-size: 1.25rem;
   }
 
-
   /* give the headings a slightly warmer dark color */
   h1 {
     margin-block-start: 0;
