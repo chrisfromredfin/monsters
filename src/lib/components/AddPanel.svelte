@@ -14,7 +14,6 @@
   const bossNames = Object.keys(data.bosses ?? {});
   let selectedBoss = bossNames[0] ?? '';
   let partyCount = 4; // default; let the user change this
-  let addingBoss = false; // e.g., a checkbox or separate button mode
 
   const dispatch = createEventDispatcher();
 
@@ -120,97 +119,188 @@
   }
 </script>
 
-<select bind:value={selectedMonster} disabled={!$scenarioLevel}>
-  {#each monsterNames as name (name)}
-    <option value={name}>{name}</option>
-  {/each}
-</select>
-
 {#if $scenarioLevel}
-  <table>
-    <thead>
-      <tr>
-        <th></th>
-        {#each Array(10)
-          .fill(0)
-          .map((_, i) => i + 1) as ndx (ndx)}
-          <th>{ndx}</th>
-        {/each}
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Elite</td>
-        {#each unitStates as state, i (i)}
-          {@const number = i + 1}
-          {@const isExisting = existingNumbers.has(number)}
-          <td class:existing={isExisting}>
-            <input
-              type="checkbox"
-              checked={state === 'elite'}
-              disabled={isExisting}
-              title={isExisting ? `${selectedMonster} #${number} already exists` : ''}
-              on:change={() => {
-                unitStates[i] = state === 'elite' ? null : 'elite';
-              }}
-            />
-          </td>
-        {/each}
-      </tr>
-      <tr>
-        <td>Regular</td>
-        {#each unitStates as state, i (i)}
-          {@const number = i + 1}
-          {@const isExisting = existingNumbers.has(number)}
-          <td class:existing={isExisting}>
-            <input
-              type="checkbox"
-              checked={state === 'normal'}
-              disabled={isExisting}
-              title={isExisting ? `${selectedMonster} #${number} already exists` : ''}
-              on:change={() => {
-                unitStates[i] = state === 'normal' ? null : 'normal';
-              }}
-            />
-          </td>
-        {/each}
-      </tr>
-    </tbody>
-  </table>
+  <div class="add-panel-container">
+    <!-- Monster Section -->
+    <div class="monster-section">
+      <div class="monster-header">
+        <label for="monster-select">Monster:</label>
+        <select id="monster-select" bind:value={selectedMonster} disabled={!$scenarioLevel}>
+          {#each monsterNames as name (name)}
+            <option value={name}>{name}</option>
+          {/each}
+        </select>
+      </div>
 
-  <button on:click={handleAdd} disabled={!selectedMonster}>Add</button>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            {#each Array(10)
+              .fill(0)
+              .map((_, i) => i + 1) as ndx (ndx)}
+              <th>{ndx}</th>
+            {/each}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Elite</td>
+            {#each unitStates as state, i (i)}
+              {@const number = i + 1}
+              {@const isExisting = existingNumbers.has(number)}
+              <td class:existing={isExisting}>
+                <input
+                  type="checkbox"
+                  checked={state === 'elite'}
+                  disabled={isExisting}
+                  title={isExisting ? `${selectedMonster} #${number} already exists` : ''}
+                  on:change={() => {
+                    unitStates[i] = state === 'elite' ? null : 'elite';
+                  }}
+                />
+              </td>
+            {/each}
+          </tr>
+          <tr>
+            <td>Regular</td>
+            {#each unitStates as state, i (i)}
+              {@const number = i + 1}
+              {@const isExisting = existingNumbers.has(number)}
+              <td class:existing={isExisting}>
+                <input
+                  type="checkbox"
+                  checked={state === 'normal'}
+                  disabled={isExisting}
+                  title={isExisting ? `${selectedMonster} #${number} already exists` : ''}
+                  on:change={() => {
+                    unitStates[i] = state === 'normal' ? null : 'normal';
+                  }}
+                />
+              </td>
+            {/each}
+          </tr>
+        </tbody>
+      </table>
 
-  <div class="boss-adder">
-    <label>
-      <input type="checkbox" bind:checked={addingBoss} />
-      Add Boss
-    </label>
+      <button on:click={handleAdd} disabled={!selectedMonster}>Add Monsters</button>
+    </div>
 
-    {#if addingBoss}
-      <div>
-        <select bind:value={selectedBoss}>
+    <!-- Boss Section -->
+    <div class="boss-section">
+      <h4>Add Boss</h4>
+
+      <div class="boss-controls">
+        <label for="boss-select">Boss:</label>
+        <select id="boss-select" bind:value={selectedBoss}>
           {#each bossNames as b (b)}<option value={b}>{b}</option>{/each}
         </select>
 
-        <label
-          >Party size (C):
-          <input type="number" min="1" max="6" bind:value={partyCount} />
-        </label>
+        <label for="party-count">Party size (C):</label>
+        <input id="party-count" type="number" min="1" max="6" bind:value={partyCount} />
 
         <button on:click={addBoss} disabled={!selectedBoss}>Add Boss</button>
       </div>
-    {/if}
+    </div>
+  </div>
+{:else}
+  <div class="no-level">
+    <p>Select a scenario level above to add monsters and bosses.</p>
+
+    <select bind:value={selectedMonster} disabled>
+      {#each monsterNames as name (name)}
+        <option value={name}>{name}</option>
+      {/each}
+    </select>
   </div>
 {/if}
 
 <style>
-  /* keep panel spacing nice if used inside <details> */
-  :global(.add-monsters) > * {
-    margin-bottom: 0.5rem;
+  /* Main horizontal container */
+  .add-panel-container {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
   }
+
+  /* Monster section (left side) */
+  .monster-section {
+    flex: 1;
+    min-width: 0; /* Allow flex item to shrink */
+  }
+
+  .monster-header {
+    margin-bottom: 0.75rem;
+  }
+
+  .monster-header label {
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-weight: bold;
+  }
+
+  .monster-header select {
+    min-width: 200px;
+  }
+
+  /* Boss section (right side) */
+  .boss-section {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+  }
+
+  .boss-section h4 {
+    margin: 0 0 1rem 0;
+    color: #495057;
+    font-size: 1.1rem;
+  }
+
+  .boss-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .boss-controls label {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+  }
+
+  .boss-controls input,
+  .boss-controls select {
+    padding: 0.25rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+  }
+
+  .boss-controls button {
+    padding: 0.5rem 1rem;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .boss-controls button:hover {
+    background: #0056b3;
+  }
+
+  .boss-controls button:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+  }
+
+  /* Table styling */
   table {
     border-collapse: collapse;
+    margin-bottom: 1rem;
   }
+
   td {
     border: 1px solid gray;
     padding: 0.25rem;
@@ -223,5 +313,50 @@
 
   td.existing input[type='checkbox'] {
     cursor: not-allowed;
+  }
+
+  /* Monster add button */
+  .monster-section button {
+    padding: 0.5rem 1rem;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .monster-section button:hover {
+    background: #1e7e34;
+  }
+
+  .monster-section button:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+  }
+
+  /* No level state */
+  .no-level {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+  }
+
+  .no-level select {
+    margin-top: 1rem;
+    opacity: 0.6;
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .add-panel-container {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .boss-section {
+      flex: none;
+      width: 100%;
+    }
   }
 </style>
