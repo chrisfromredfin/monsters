@@ -4,8 +4,12 @@
   import { scenarioLevel } from '$lib/stores/scenarioLevel.js';
   import { computeBossHealth } from '$lib/boss-helpers.js';
 
+  /** @typedef {import('$lib/types').Unit} Unit */
+
   // Props from parent
+  /** @type {any} */
   export let data; // the big JSON (monsters, levels...)
+  /** @type {string[]} */
   export let monsterNames = []; // list of names for the <select>
   const bossNames = Object.keys(data.bosses ?? {});
   let selectedBoss = bossNames[0] ?? '';
@@ -29,11 +33,11 @@
     const monster = data.monsters[selectedMonster];
     if (!monster) return;
 
-    const levelData = monster.level.find((l) => l.level === +$scenarioLevel);
+    const levelData = monster.level.find((/** @type {any} */ l) => l.level === +$scenarioLevel);
     if (!levelData) return;
 
     const now = Date.now();
-    const newUnits = unitStates
+    const newUnits = /** @type {Unit[]} */ (unitStates
       .map((type, i) => {
         if (!type) return null;
 
@@ -43,17 +47,19 @@
 
         const id = crypto?.randomUUID?.() ?? `${selectedMonster}-${type}-${number}-${now}`;
         const stats = levelData[type];
-        return {
+        /** @type {Unit} */
+        const unit = {
           id,
           number,
-          type,
+          type: /** @type {'normal' | 'elite' | 'boss'} */ (type),
           stats,
           name: selectedMonster,
           currentHp: stats.health,
           activeConditions: []
         };
+        return unit;
       })
-      .filter(Boolean);
+      .filter(Boolean));
 
     if (newUnits.length === 0) return;
 
@@ -71,18 +77,19 @@
 
     const boss = data.bosses[selectedBoss];
     // find the level block that matches the scenario level
-    const lvl = boss.level.find((l) => l.level === +$scenarioLevel);
+    const lvl = boss.level.find((/** @type {any} */ l) => l.level === +$scenarioLevel);
     if (!lvl) return;
 
     // health is an expression like "10xC"
     const hp = computeBossHealth(String(lvl.health), partyCount);
 
     const id = crypto?.randomUUID?.() ?? `${selectedBoss}-boss-${Date.now()}`;
+    /** @type {Unit} */
     const unit = {
       id,
       name: selectedBoss,
       number: 1, // typically single boss; keep 1
-      type: 'boss',
+      type: /** @type {'normal' | 'elite' | 'boss'} */ ('boss'),
       currentHp: hp,
       stats: {
         health: hp,
