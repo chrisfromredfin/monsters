@@ -7,6 +7,9 @@
 
   const dispatch = createEventDispatcher();
 
+  /**
+   * @param {number} delta
+   */
   function adjustHp(delta) {
     dispatch('adjust', { delta });
   }
