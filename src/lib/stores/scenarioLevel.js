@@ -2,7 +2,7 @@ import { writable } from 'svelte/store';
 
 const initial =
   typeof localStorage !== 'undefined' && localStorage.getItem('scenarioLevel')
-    ? JSON.parse(localStorage.getItem('scenarioLevel'))
+    ? JSON.parse(localStorage.getItem('scenarioLevel') ?? 'null')
     : null;
 
 export const scenarioLevel = writable(initial);
