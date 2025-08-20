@@ -24,13 +24,18 @@
     }
   }
 
-  let addPanelOpen = true; // controls <details> open/closed
+  let addPanelOpen = true; // controls expandable panel open/closed
   let decidedInitialOpen = false; // ensure we run this logic only once
 
   // Decide only once, after the store is available
   $: if (!decidedInitialOpen) {
     addPanelOpen = $playArea.length === 0; // open if starting fresh, else collapse
     decidedInitialOpen = true;
+  }
+
+  // Handle smooth animation for custom expandable panel
+  function toggleAddPanel() {
+    addPanelOpen = !addPanelOpen;
   }
 </script>
 
@@ -58,10 +63,22 @@ Scenario Level:
 </select>
 <hr />
 
-<details class="add-monsters" bind:open={addPanelOpen}>
-  <summary>Add Monsters</summary>
-  <AddPanel {data} {monsterNames} />
-</details>
+<div class="add-monsters" class:open={addPanelOpen}>
+  <div
+    class="summary"
+    tabindex="0"
+    on:click={toggleAddPanel}
+    on:keydown={(e) => e.key === 'Enter' && toggleAddPanel()}
+  >
+    <span class="arrow" class:open={addPanelOpen}>▶</span>
+    Add Monsters
+  </div>
+  <div class="details-content">
+    <div class="details-inner">
+      <AddPanel {data} {monsterNames} />
+    </div>
+  </div>
+</div>
 
 {#if $playArea.length > 0}
   <h2>Monsters</h2>
@@ -142,7 +159,59 @@ Scenario Level:
     color: #3a2f23;
   }
 
-  .add-monsters > * {
-    margin-bottom: 0.5rem;
+  /* Smooth animation for custom expandable panel */
+  .add-monsters {
+    border: 1px solid #abb9c8;
+    border-radius: 8px;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .add-monsters .summary {
+    padding: 0.375rem;
+    background: #f8f9fa;
+    cursor: pointer;
+    user-select: none;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .add-monsters .summary:hover {
+    background: #e9ecef;
+  }
+
+  .add-monsters .arrow {
+    transition: transform 0.3s ease;
+    display: inline-block;
+    font-size: 0.8em;
+  }
+
+  .add-monsters .arrow.open {
+    transform: rotate(90deg);
+  }
+
+  /* Container for the animated content */
+  .add-monsters .details-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+
+  .add-monsters.open .details-content {
+    max-height: 800px; /* Large enough to accommodate content */
+  }
+
+  /* Inner wrapper with padding animation */
+  .add-monsters .details-inner {
+    padding: 0 1rem;
+    transition: padding 0.4s ease;
+    background-color: white;
+  }
+
+  .add-monsters.open .details-inner {
+    padding: 1rem;
   }
 </style>
