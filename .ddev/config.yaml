@@ -11,18 +11,20 @@ database:
     version: "10.11"
 use_dns_when_possible: true
 composer_version: "2"
-web_environment: []
+web_environment:
+  - NODE_ENV=development
+  - LAUNCH_EDITOR=code
 corepack_enable: false
 web_extra_exposed_ports:
-- name: svelte
-  container_port: 3000
-  http_port: 80
-  https_port: 443
+    - name: svelte
+      container_port: 3000
+      http_port: 80
+      https_port: 443
 web_extra_daemons:
-- name: "sveltekit-watch"
-  command: "yarn dev --host 0.0.0.0"
-  directory: /var/www/html
-
+    - name: sveltekit-watch
+      command: yarn dev --host 0.0.0.0
+      directory: /var/www/html
+disable_upload_dirs_warning: true
 
 # Key features of DDEV's config.yaml:
 
@@ -253,6 +255,11 @@ web_extra_daemons:
 # The default time that DDEV waits for all containers to become ready can be increased from
 # the default 120. This helps in importing huge databases, for example.
 
+#web_extra_exposed_ports:
+#- name: nodejs
+#  container_port: 3000
+#  http_port: 2999
+#  https_port: 3000
 #- name: something
 #  container_port: 4000
 #  https_port: 4000

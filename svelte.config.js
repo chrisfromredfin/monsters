@@ -4,6 +4,9 @@ const dev = process.argv.includes('dev');
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
+  vitePlugin: {
+    inspector: process.env.NODE_ENV === 'development'
+  },
   kit: {
     adapter: adapter({
       fallback: undefined, // can be null if you're building a SPA
