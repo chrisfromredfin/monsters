@@ -15,8 +15,21 @@
   }
 </script>
 
-HP:<span class="large">{currentHp}</span>/{maxHp}
-<span class="hp-controls">
-  <button on:click={() => adjustHp(-1)}>-</button>
-  <button on:click={() => adjustHp(+1)}>+</button>
-</span>
+<div class="hp-controls">
+  <span>HP:<span class="large">{currentHp}</span>/{maxHp}</span>
+  <span class="hp-controls">
+    <button on:click={() => adjustHp(-1)}>-</button>
+    <button on:click={() => adjustHp(+1)}>+</button>
+  </span>
+</div>
+
+<style>
+  .hp-controls {
+    display: flex;
+  }
+
+  .hp-controls > span {
+    width: 50%;
+    display: inline-block;
+  }
+</style>
