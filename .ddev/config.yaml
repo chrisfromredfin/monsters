@@ -13,7 +13,7 @@ use_dns_when_possible: true
 composer_version: "2"
 web_environment:
   - NODE_ENV=development
-  - LAUNCH_EDITOR=code
+  - LAUNCH_EDITOR=launch-vscode
 corepack_enable: false
 web_extra_exposed_ports:
     - name: svelte

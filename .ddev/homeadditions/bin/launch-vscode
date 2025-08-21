@@ -1,0 +1,29 @@
+#!/bin/bash
+# launch-vscode - Opens VSCode on host from DDEV container
+# Usage: launch-vscode <file:line:column>
+
+if [ $# -eq 0 ]; then
+    echo "Usage: launch-vscode <file:line:column>"
+    exit 1
+fi
+
+ARG="$1"
+
+# Convert container path to host path
+HOST_PATH=$(echo "$ARG" | sed 's|/var/www/html|/Users/cwells/Sites/monsters|g')
+
+# Check if the argument contains line:column info
+if [[ "$HOST_PATH" =~ ^(.+):([0-9]+):([0-9]+)$ ]]; then
+    FILE="${BASH_REMATCH[1]}"
+    LINE="${BASH_REMATCH[2]}"
+    COLUMN="${BASH_REMATCH[3]}"
+    
+    echo "Opening: $FILE at line $LINE, column $COLUMN"
+    
+    # Use SSH to run code command on host
+    ssh host.docker.internal "/opt/homebrew/bin/code --goto \"${FILE}:${LINE}:${COLUMN}\""
+else
+    # Just a file path
+    echo "Opening: $HOST_PATH"
+    ssh host.docker.internal "/opt/homebrew/bin/code \"${HOST_PATH}\""
+fi
