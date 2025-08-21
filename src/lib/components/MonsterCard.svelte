@@ -56,8 +56,8 @@
             <span class="attribute-group">
               <img
                 src={iconMap[iconKey]}
-                width="16"
-                height="16"
+                width="22"
+                height="22"
                 alt={attrStr}
                 title={attrStr}
                 class="attribute-icon"
