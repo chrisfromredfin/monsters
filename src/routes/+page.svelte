@@ -4,6 +4,7 @@
   import { monsterImageMap } from '$lib/assets/registry';
   import MonsterCard from '$lib/components/MonsterCard.svelte';
   import BossCard from '$lib/components/BossCard.svelte';
+  import AllyCard from '$lib/components/AllyCard.svelte';
   import AddPanel from '$lib/components/AddPanel.svelte';
 
   export let data;
@@ -84,22 +85,25 @@ Scenario Level:
 {#if $playArea.length > 0}
   <h2>Monsters</h2>
   <div class="play-area">
-    {#each $groupedUnits as group (group[0].name)}
+    {#each $groupedUnits as group (group[0].type === 'ally' ? 'Allies' : group[0].name)}
+      {@const groupName = group[0].type === 'ally' ? 'Allies' : group[0].name}
       <div class="monster-group">
         <h3>
-          {#if monsterImageMap[`Horz-${group[0].name}`]}
+          {#if group[0].type !== 'ally' && monsterImageMap[`Horz-${group[0].name}`]}
             <img
               src={monsterImageMap[`Horz-${group[0].name}`]}
               alt={group[0].name}
               class="monster-image"
             />
           {/if}
-          {group[0].name}
+          {groupName}
         </h3>
         <div class="card-row">
           {#each group as unit (unit.id)}
             {#if unit.type === 'boss'}
               <BossCard {unit} />
+            {:else if unit.type === 'ally'}
+              <AllyCard {unit} />
             {:else}
               <MonsterCard {unit} />
             {/if}

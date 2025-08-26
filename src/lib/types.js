@@ -21,7 +21,7 @@
  *   id: string;
  *   name: string;
  *   number: number;
- *   type: 'normal' | 'elite' | 'boss';
+ *   type: 'normal' | 'elite' | 'boss' | 'ally';
  *   currentHp: number;
  *   stats: StatLine;
  *   activeConditions: string[];

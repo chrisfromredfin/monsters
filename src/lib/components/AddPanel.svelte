@@ -15,6 +15,10 @@
   let selectedBoss = bossNames[0] ?? '';
   let partyCount = 4; // default; let the user change this
 
+  // Ally state
+  let allyName = '';
+  let allyHp = 1;
+
   const dispatch = createEventDispatcher();
 
   // Local UI state (kept internal to the panel)
@@ -117,6 +121,32 @@
     // optionally close the panel or leave it open
     // dispatch('added') if you want the parent to collapse, etc.
   }
+
+  function nextAllyNumber() {
+    const existing = $playArea.filter((u) => u.type === 'ally');
+    return existing.length + 1;
+  }
+
+  function addAlly() {
+    if (!allyHp) return;
+    const now = Date.now();
+    const id = crypto?.randomUUID?.() ?? `ally-${now}`;
+    const name = allyName?.trim() ? allyName.trim() : `Ally ${nextAllyNumber()}`;
+    /** @type {Unit} */
+    const unit = {
+      id,
+      name,
+      number: 1,
+      type: /** @type {'normal' | 'elite' | 'boss' | 'ally'} */ ('ally'),
+      stats: { health: Number(allyHp), move: 0, attack: 0 },
+      currentHp: Number(allyHp),
+      activeConditions: []
+    };
+    playArea.update((a) => [...a, unit]);
+    allyName = '';
+    allyHp = 1;
+    dispatch('added');
+  }
 </script>
 
 {#if $scenarioLevel}
@@ -186,20 +216,38 @@
       <button on:click={handleAdd} disabled={!selectedMonster}>Add Monsters</button>
     </div>
 
-    <!-- Boss Section -->
-    <div class="boss-section">
-      <h4>Add Boss</h4>
+    <!-- Boss and Ally Sections (right column) -->
+    <div class="right-column">
+      <!-- Boss Section -->
+      <div class="boss-section">
+        <h4>Add Boss</h4>
 
-      <div class="boss-controls">
-        <label for="boss-select">Boss:</label>
-        <select id="boss-select" bind:value={selectedBoss}>
-          {#each bossNames as b (b)}<option value={b}>{b}</option>{/each}
-        </select>
+        <div class="boss-controls">
+          <label for="boss-select">Boss:</label>
+          <select id="boss-select" bind:value={selectedBoss}>
+            {#each bossNames as b (b)}<option value={b}>{b}</option>{/each}
+          </select>
 
-        <label for="party-count">Party size (C):</label>
-        <input id="party-count" type="number" min="1" max="6" bind:value={partyCount} />
+          <label for="party-count">Party size (C):</label>
+          <input id="party-count" type="number" min="1" max="6" bind:value={partyCount} />
 
-        <button on:click={addBoss} disabled={!selectedBoss}>Add Boss</button>
+          <button on:click={addBoss} disabled={!selectedBoss}>Add Boss</button>
+        </div>
+      </div>
+
+      <!-- Ally Section -->
+      <div class="ally-section">
+        <h4>Add Ally</h4>
+
+        <div class="ally-controls">
+          <label for="ally-name">Name:</label>
+          <input id="ally-name" type="text" bind:value={allyName} placeholder="(auto)" />
+
+          <label for="ally-hp">HP:</label>
+          <input id="ally-hp" type="number" min="1" bind:value={allyHp} />
+
+          <button on:click={addAlly} disabled={!allyHp || allyHp < 1}>Add Ally</button>
+        </div>
       </div>
     </div>
   </div>
@@ -241,6 +289,14 @@
 
   .monster-header select {
     min-width: 200px;
+  }
+
+  /* Right column for boss and ally sections */
+  .right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-width: 320px;
   }
 
   /* Boss section (right side) */
@@ -291,6 +347,57 @@
   }
 
   .boss-controls button:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+  }
+
+  /* Ally section */
+  .ally-section {
+    background: #e8f9fc;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid #17a2b8;
+  }
+
+  .ally-section h4 {
+    margin: 0 0 1rem 0;
+    color: #495057;
+    font-size: 1.1rem;
+  }
+
+  .ally-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .ally-controls label {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+  }
+
+  .ally-controls input {
+    padding: 0.25rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+  }
+
+  .ally-controls button {
+    padding: 0.5rem 1rem;
+    background: #17a2b8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .ally-controls button:hover {
+    background: #138496;
+  }
+
+  .ally-controls button:disabled {
     background: #6c757d;
     cursor: not-allowed;
   }
@@ -354,7 +461,12 @@
       gap: 1.5rem;
     }
 
-    .boss-section {
+    .right-column {
+      min-width: 0;
+    }
+
+    .boss-section,
+    .ally-section {
       flex: none;
       width: 100%;
     }
