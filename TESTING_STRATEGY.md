@@ -76,17 +76,29 @@ yarn test:coverage
 yarn test:ui
 ```
 
-### E2E Tests
+### E2E Tests (Playwright with DDEV)
 ```bash
 # Run E2E tests (headless)
 yarn test:e2e
 
-# Run E2E tests with UI
+# Run E2E tests with UI (opens browser interface)
 yarn test:e2e:ui
 
 # Run E2E tests in headed mode (see browser)
 yarn test:e2e:headed
+
+# Generate test code by browsing
+ddev playwright codegen
+
+# View test reports
+ddev playwright show-report
 ```
+
+**Special DDEV Features:**
+- ✅ **KasmVNC Access**: https://monsters.ddev.site:8444 (username: your local username, password: secret)
+- ✅ **Test Reports**: https://monsters.ddev.site:9324
+- ✅ **Cross-browser testing**: Chromium, Firefox, WebKit
+- ✅ **No dependency issues**: All browsers run in containerized environment
 
 ## 📁 **Test File Organization**
 
