@@ -71,7 +71,7 @@ export const groupedUnits =
     derived(playArea, (arr) => {
       /** @type {Record<string, import('$lib/types').Unit[]>} */
       const byName = {};
-      
+
       for (const u of arr) {
         // Group all allies together under "Allies" regardless of their individual names
         const groupKey = u.type === 'ally' ? 'Allies' : u.name;
@@ -83,7 +83,7 @@ export const groupedUnits =
         const group = byName[k];
         const isBossGroup = group.length === 1 && group[0].type === 'boss';
         const isAllyGroup = k === 'Allies';
-        
+
         if (!isBossGroup) {
           group.sort((a, b) => {
             // For ally groups, sort by name first, then by creation order (id)
@@ -106,19 +106,19 @@ export const groupedUnits =
         const b2 = g2.length === 1 && g2[0].type === 'boss';
         const a1 = g1[0].type === 'ally';
         const a2 = g2[0].type === 'ally';
-        
+
         // Allies last
         if (a1 && !a2) return 1;
         if (!a1 && a2) return -1;
-        
+
         // Bosses second to last (before allies)
         if (b1 !== b2) return b1 ? 1 : -1;
-        
+
         // For non-ally, non-boss groups (monsters), sort by name
         if (!a1 && !a2 && !b1 && !b2) {
           return g1[0].name.localeCompare(g2[0].name);
         }
-        
+
         return 0;
       });
 
