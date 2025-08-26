@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { get, writable } from 'svelte/store';
+import { get } from 'svelte/store';
 import { playArea, groupedUnits } from './playArea.js';
 
 /** @typedef {import('$lib/types').Unit} Unit */
@@ -42,17 +42,15 @@ describe('groupedUnits Store - Ally Grouping Logic', () => {
 
       // Should have 2 groups: "Ancient Artillery" and "Allies"
       expect(groups).toHaveLength(2);
-      
+
       // Find the allies group
-      const alliesGroup = groups.find(group => 
-        group.length > 0 && group[0].type === 'ally'
-      );
-      
+      const alliesGroup = groups.find((group) => group.length > 0 && group[0].type === 'ally');
+
       expect(alliesGroup).toBeTruthy();
       expect(alliesGroup).toHaveLength(3);
-      
+
       // All allies should be in the same group
-      const allyNames = alliesGroup.map(unit => unit.name).sort();
+      const allyNames = alliesGroup.map((unit) => unit.name).sort();
       expect(allyNames).toEqual(['Ally 1', 'Bob', 'Healer']);
     });
 
@@ -67,12 +65,10 @@ describe('groupedUnits Store - Ally Grouping Logic', () => {
       playArea.set(testUnits);
       const groups = get(groupedUnits);
 
-      const alliesGroup = groups.find(group => 
-        group.length > 0 && group[0].type === 'ally'
-      );
+      const alliesGroup = groups.find((group) => group.length > 0 && group[0].type === 'ally');
 
       expect(alliesGroup).toHaveLength(4);
-      
+
       // Should be sorted by name first, then by ID for ties
       expect(alliesGroup[0].name).toBe('Alice');
       expect(alliesGroup[0].id).toBe('id-1'); // Earlier ID
@@ -83,9 +79,7 @@ describe('groupedUnits Store - Ally Grouping Logic', () => {
     });
 
     it('should handle single ally correctly', () => {
-      const testUnits = [
-        createUnit({ name: 'Solo Ally', type: 'ally' })
-      ];
+      const testUnits = [createUnit({ name: 'Solo Ally', type: 'ally' })];
 
       playArea.set(testUnits);
       const groups = get(groupedUnits);
@@ -106,9 +100,7 @@ describe('groupedUnits Store - Ally Grouping Logic', () => {
       playArea.set(testUnits);
       const groups = get(groupedUnits);
 
-      const alliesGroup = groups.find(group => 
-        group.length > 0 && group[0].type === 'ally'
-      );
+      const alliesGroup = groups.find((group) => group.length > 0 && group[0].type === 'ally');
 
       expect(alliesGroup).toHaveLength(3);
       // Empty names should sort first, then by ID
@@ -154,7 +146,7 @@ describe('groupedUnits Store - Ally Grouping Logic', () => {
       const groups = get(groupedUnits);
 
       expect(groups).toHaveLength(4);
-      
+
       // Monster groups should be sorted alphabetically
       expect(groups[0][0].name).toBe('Alpha Monster');
       expect(groups[1][0].name).toBe('Beta Monster');
@@ -174,7 +166,7 @@ describe('groupedUnits Store - Ally Grouping Logic', () => {
       const groups = get(groupedUnits);
 
       expect(groups).toHaveLength(4);
-      
+
       // Should be: Monster, Boss A, Boss B, Allies
       expect(groups[0][0].name).toBe('Monster');
       expect(groups[1][0].name).toBe('Boss A');
@@ -197,7 +189,7 @@ describe('groupedUnits Store - Ally Grouping Logic', () => {
 
       expect(groups).toHaveLength(1);
       const monsterGroup = groups[0];
-      
+
       // Should be sorted: elite #1, elite #2, normal #1, normal #3
       expect(monsterGroup[0].type).toBe('elite');
       expect(monsterGroup[0].number).toBe(1);
@@ -210,9 +202,7 @@ describe('groupedUnits Store - Ally Grouping Logic', () => {
     });
 
     it('should not sort boss groups (single unit)', () => {
-      const testUnits = [
-        createUnit({ name: 'Boss Monster', type: 'boss', number: 1 })
-      ];
+      const testUnits = [createUnit({ name: 'Boss Monster', type: 'boss', number: 1 })];
 
       playArea.set(testUnits);
       const groups = get(groupedUnits);
@@ -230,15 +220,15 @@ describe('groupedUnits Store - Ally Grouping Logic', () => {
         createUnit({ id: 'ally-1', name: 'Healer', type: 'ally' }),
         createUnit({ id: 'ally-2', name: 'Ally 1', type: 'ally' }),
         createUnit({ id: 'ally-3', name: 'Bob', type: 'ally' }),
-        
+
         // Multiple monsters of same type
         createUnit({ name: 'Ancient Artillery', type: 'elite', number: 1 }),
         createUnit({ name: 'Ancient Artillery', type: 'normal', number: 2 }),
         createUnit({ name: 'Ancient Artillery', type: 'normal', number: 1 }),
-        
+
         // Different monster type
         createUnit({ name: 'Bandit Guard', type: 'normal', number: 1 }),
-        
+
         // Boss
         createUnit({ name: 'Big Boss', type: 'boss', number: 1 })
       ];
@@ -247,13 +237,13 @@ describe('groupedUnits Store - Ally Grouping Logic', () => {
       const groups = get(groupedUnits);
 
       expect(groups).toHaveLength(4);
-      
+
       // Verify order: Ancient Artillery, Bandit Guard, Big Boss, Allies
       expect(groups[0][0].name).toBe('Ancient Artillery');
       expect(groups[1][0].name).toBe('Bandit Guard');
       expect(groups[2][0].name).toBe('Big Boss');
       expect(groups[3][0].type).toBe('ally');
-      
+
       // Verify Ancient Artillery internal sorting (elite first, then by number)
       const artilleryGroup = groups[0];
       expect(artilleryGroup).toHaveLength(3);
@@ -263,7 +253,7 @@ describe('groupedUnits Store - Ally Grouping Logic', () => {
       expect(artilleryGroup[1].number).toBe(1);
       expect(artilleryGroup[2].type).toBe('normal');
       expect(artilleryGroup[2].number).toBe(2);
-      
+
       // Verify allies sorting (alphabetical by name)
       const alliesGroup = groups[3];
       expect(alliesGroup).toHaveLength(3);
@@ -284,7 +274,7 @@ describe('groupedUnits Store - Ally Grouping Logic', () => {
 
       expect(groups).toHaveLength(1);
       expect(groups[0]).toHaveLength(3);
-      
+
       // Should be sorted alphabetically
       expect(groups[0][0].name).toBe('Ally 1');
       expect(groups[0][1].name).toBe('Ally 2');
