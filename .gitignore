@@ -7,7 +7,6 @@ node_modules
 .wrangler
 /.svelte-kit
 /build
-/coverage
 
 # OS
 .DS_Store
@@ -25,3 +24,8 @@ vite.config.ts.timestamp-*
 
 # DDEV SSH Keys (SECURITY: Never commit private keys!)
 .ddev/homeadditions/.ssh/*_key
+
+# Generated files from testing
+/playwright-report
+/coverage
+/test-results
