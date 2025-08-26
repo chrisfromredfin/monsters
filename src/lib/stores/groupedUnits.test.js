@@ -50,7 +50,9 @@ describe('groupedUnits Store - Ally Grouping Logic', () => {
       expect(alliesGroup).toHaveLength(3);
 
       // All allies should be in the same group
-      const allyNames = alliesGroup.map((unit) => unit.name).sort();
+      const allyNames = /** @type {any} */ (alliesGroup)
+        .map(/** @param {any} unit */ (unit) => unit.name)
+        .sort();
       expect(allyNames).toEqual(['Ally 1', 'Bob', 'Healer']);
     });
 
@@ -67,15 +69,17 @@ describe('groupedUnits Store - Ally Grouping Logic', () => {
 
       const alliesGroup = groups.find((group) => group.length > 0 && group[0].type === 'ally');
 
+      expect(alliesGroup).toBeTruthy();
       expect(alliesGroup).toHaveLength(4);
 
       // Should be sorted by name first, then by ID for ties
-      expect(alliesGroup[0].name).toBe('Alice');
-      expect(alliesGroup[0].id).toBe('id-1'); // Earlier ID
-      expect(alliesGroup[1].name).toBe('Alice');
-      expect(alliesGroup[1].id).toBe('id-4'); // Later ID
-      expect(alliesGroup[2].name).toBe('Bob');
-      expect(alliesGroup[3].name).toBe('Charlie');
+      const allies = /** @type {any} */ (alliesGroup);
+      expect(allies[0].name).toBe('Alice');
+      expect(allies[0].id).toBe('id-1'); // Earlier ID
+      expect(allies[1].name).toBe('Alice');
+      expect(allies[1].id).toBe('id-4'); // Later ID
+      expect(allies[2].name).toBe('Bob');
+      expect(allies[3].name).toBe('Charlie');
     });
 
     it('should handle single ally correctly', () => {
@@ -102,13 +106,15 @@ describe('groupedUnits Store - Ally Grouping Logic', () => {
 
       const alliesGroup = groups.find((group) => group.length > 0 && group[0].type === 'ally');
 
+      expect(alliesGroup).toBeTruthy();
       expect(alliesGroup).toHaveLength(3);
       // Empty names should sort first, then by ID
-      expect(alliesGroup[0].name).toBe('');
-      expect(alliesGroup[0].id).toBe('empty-1');
-      expect(alliesGroup[1].name).toBe('');
-      expect(alliesGroup[1].id).toBe('empty-2');
-      expect(alliesGroup[2].name).toBe('Named Ally');
+      const allies = /** @type {any} */ (alliesGroup);
+      expect(allies[0].name).toBe('');
+      expect(allies[0].id).toBe('empty-1');
+      expect(allies[1].name).toBe('');
+      expect(allies[1].id).toBe('empty-2');
+      expect(allies[2].name).toBe('Named Ally');
     });
   });
 
@@ -302,16 +308,15 @@ describe('groupedUnits Store - Ally Grouping Logic', () => {
   describe('Edge Cases', () => {
     it('should handle units with undefined/null properties gracefully', () => {
       const testUnits = [
-        {
+        createUnit({
           id: 'test-1',
           name: 'Broken Unit',
           number: 1,
           type: 'ally',
           stats: { health: 5, move: 0, attack: 0 },
-          currentHp: 5,
-          activeConditions: []
-          // Missing some optional properties
-        }
+          currentHp: 5
+          // Missing some optional properties like range, attributes
+        })
       ];
 
       playArea.set(testUnits);
