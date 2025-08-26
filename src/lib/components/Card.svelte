@@ -29,4 +29,8 @@
     border-color: #510e6b;
     background-color: white;
   }
+  .monster-card.ally {
+    border-color: #17a2b8;
+    background: #e8f9fc;
+  }
 </style>

@@ -4,6 +4,7 @@
   import { monsterImageMap } from '$lib/assets/registry';
   import MonsterCard from '$lib/components/MonsterCard.svelte';
   import BossCard from '$lib/components/BossCard.svelte';
+  import AllyCard from '$lib/components/AllyCard.svelte';
   import AddPanel from '$lib/components/AddPanel.svelte';
 
   export let data;
@@ -100,6 +101,8 @@ Scenario Level:
           {#each group as unit (unit.id)}
             {#if unit.type === 'boss'}
               <BossCard {unit} />
+            {:else if unit.type === 'ally'}
+              <AllyCard {unit} />
             {:else}
               <MonsterCard {unit} />
             {/if}
