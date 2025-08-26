@@ -18,7 +18,14 @@ function loadInitial() {
         id: String(u.id ?? crypto?.randomUUID?.() ?? Date.now()),
         name: String(u.name ?? ''),
         number: Number(u.number ?? 1),
-        type: u.type === 'boss' ? 'boss' : u.type === 'elite' ? 'elite' : u.type === 'ally' ? 'ally' : 'normal',
+        type:
+          u.type === 'boss'
+            ? 'boss'
+            : u.type === 'elite'
+              ? 'elite'
+              : u.type === 'ally'
+                ? 'ally'
+                : 'normal',
         stats: {
           health: Number(u.stats?.health ?? 0),
           move: Number(u.stats?.move ?? 0),
