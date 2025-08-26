@@ -20,12 +20,14 @@ yarn run test:coverage
 ```
 
 **Current Results:**
+
 - ✅ **81.67%** overall coverage of testable code
 - ✅ **100%** coverage of `constants.js` and `boss-helpers.js`
 - ✅ **72%** coverage of stores (playArea.js has some untested error paths)
 - ✅ **100%** coverage of `unitActions.js`
 
 **What's Excluded from Coverage:**
+
 - `.svelte` files (tested via E2E instead)
 - Config files (`*.config.js`, `*.config.ts`)
 - Test files themselves
@@ -36,12 +38,14 @@ yarn run test:coverage
 ### Unit Tests (`src/**/*.test.js`)
 
 **What we test:**
+
 - Business logic functions
 - Store behavior
 - Utility functions
 - Constants and configurations
 
 **Examples:**
+
 - `AddPanel.test.js` - Business logic simulation (monster addition, boss health calculation, ally naming)
 - `constants.test.js` - Configuration validation
 - `unitActions.test.js` - Action utilities
@@ -50,18 +54,21 @@ yarn run test:coverage
 ### E2E Tests (`tests/*.spec.js`)
 
 **What we test:**
+
 - Full user workflows
 - Component interactions
 - UI behavior
 - Cross-browser compatibility
 
 **Examples:**
+
 - `addPanel.spec.js` - Complete AddPanel user workflows
 - `basic.spec.js` - Homepage and navigation
 
 ## 🚀 **Running Tests**
 
 ### Unit & Integration Tests
+
 ```bash
 # Run tests in watch mode
 yarn test
@@ -77,6 +84,7 @@ yarn test:ui
 ```
 
 ### E2E Tests (Playwright with DDEV)
+
 ```bash
 # Run E2E tests (headless)
 yarn test:e2e
@@ -95,6 +103,7 @@ ddev playwright show-report
 ```
 
 **Special DDEV Features:**
+
 - ✅ **KasmVNC Access**: https://monsters.ddev.site:8444 (username: your local username, password: secret)
 - ✅ **Test Reports**: https://monsters.ddev.site:9324
 - ✅ **Cross-browser testing**: Chromium, Firefox, WebKit
@@ -132,18 +141,21 @@ tests/
 ## 🎯 **When to Add New Tests**
 
 ### Add Unit Tests When:
+
 - Creating new utility functions
 - Adding business logic to stores
 - Writing helper functions
 - Creating constants or configurations
 
 ### Add E2E Tests When:
+
 - Adding new user workflows
 - Creating new UI components with complex interactions
 - Testing cross-component integration
 - Verifying accessibility or browser compatibility
 
 ### Don't Add Tests For:
+
 - Simple Svelte components without logic
 - Styling or layout changes
 - Configuration files
