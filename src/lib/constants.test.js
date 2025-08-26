@@ -48,12 +48,12 @@ describe('Constants', () => {
       };
 
       Object.entries(expectedMappings).forEach(([condition, immunity]) => {
-        expect(IMMUNITY_MAP[condition]).toBe(immunity);
+        expect(/** @type {any} */ (IMMUNITY_MAP)[condition]).toBe(immunity);
       });
     });
 
     it('should not contain mapping for strengthened', () => {
-      expect(IMMUNITY_MAP.strengthened).toBeUndefined();
+      expect(/** @type {any} */ (IMMUNITY_MAP).strengthened).toBeUndefined();
     });
 
     it('should have all values as strings', () => {
@@ -65,9 +65,9 @@ describe('Constants', () => {
 
   describe('Integration', () => {
     it('should have most conditions represented in immunity map', () => {
-      const conditionsWithoutImmunity = CONDITIONS.filter((condition) => !IMMUNITY_MAP[condition]);
-
-      // Only 'strengthened' should not have an immunity counterpart
+      const conditionsWithoutImmunity = CONDITIONS.filter(
+        (condition) => !(/** @type {any} */ (IMMUNITY_MAP)[condition])
+      );
       expect(conditionsWithoutImmunity).toEqual(['strengthened']);
     });
   });
