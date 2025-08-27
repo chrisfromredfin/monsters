@@ -50,22 +50,63 @@
         <div class="attributes">
           {#each unit.stats.attributes as attr (attr)}
             {@const attrStr = String(attr)}
-            {@const iconKey = attrStr.split(' ')[0]?.toLowerCase()}
-            {@const attrValue = attrStr.split(' ')[1]?.toLowerCase()}
-            {#if iconMap[iconKey]}
-              <span class="attribute-group">
-                <img
-                  src={iconMap[iconKey]}
-                  width="22"
-                  height="22"
-                  alt={attrStr}
-                  title={attrStr}
-                  class="attribute-icon"
-                />
-                {attrValue}
-              </span>
+
+            <!-- Handle complex attributes first -->
+            {#if attrStr.toLowerCase().includes('disadvantage')}
+              {#if iconMap['disadvantage']}
+                <span class="attribute-group disadvantage" title={attrStr}>
+                  <img
+                    src={iconMap['disadvantage']}
+                    width="16"
+                    height="16"
+                    alt="Disadvantage"
+                    class="attribute-icon"
+                  />
+                  <span class="attribute-value">Disadvantage</span>
+                </span>
+              {:else}
+                <span class="attribute-text disadvantage" title={attrStr}>⚫ Disadvantage</span>
+              {/if}
+            {:else if attrStr.toLowerCase().includes('advantage')}
+              {#if iconMap['advantage']}
+                <span class="attribute-group advantage" title={attrStr}>
+                  <img
+                    src={iconMap['advantage']}
+                    width="16"
+                    height="16"
+                    alt="Advantage"
+                    class="attribute-icon"
+                  />
+                  <span class="attribute-value">Advantage</span>
+                </span>
+              {:else}
+                <span class="attribute-text advantage" title={attrStr}>⚪ Advantage</span>
+              {/if}
             {:else}
-              <span>{attrStr}</span>
+              <!-- Handle normal attributes -->
+              {@const parts = attrStr.split(' ')}
+              {@const iconKey = parts[0]?.toLowerCase()}
+              {@const attrValue = parts.slice(1).join(' ')}
+              {@const hasIcon = iconMap[iconKey]}
+              {@const displayValue = attrValue || ''}
+
+              {#if hasIcon}
+                <span class="attribute-group" title={attrStr}>
+                  <img
+                    src={iconMap[iconKey]}
+                    width="16"
+                    height="16"
+                    alt={attrStr}
+                    class="attribute-icon"
+                  />
+                  {#if displayValue}
+                    <span class="attribute-value">{displayValue}</span>
+                  {/if}
+                </span>
+              {:else}
+                <!-- Fallback for attributes without icons -->
+                <span class="attribute-text" title={attrStr}>{attrStr}</span>
+              {/if}
             {/if}
           {/each}
         </div>
