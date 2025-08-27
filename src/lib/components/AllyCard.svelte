@@ -13,8 +13,17 @@
   /** @type {Unit} */
   export let unit;
 
+  // Animation state
+  let isRemoving = false;
+
   function handleRemove() {
-    removeUnit(unit.id);
+    // Start the animation
+    isRemoving = true;
+
+    // Remove the unit after animation completes
+    setTimeout(() => {
+      removeUnit(unit.id);
+    }, 300); // Match animation duration
   }
 
   /**
@@ -32,22 +41,43 @@
   }
 </script>
 
-<Card className="ally">
-  <!-- Remove (top-right) -->
-  <RemoveButton on:remove={handleRemove} />
+<div class="card-wrapper" class:removing={isRemoving}>
+  <Card className="ally">
+    <!-- Remove (top-right) -->
+    <RemoveButton on:remove={handleRemove} />
 
-  <div class="top">
-    <div><strong class="large">{unit.name}</strong> (Ally)</div>
+    <div class="top">
+      <div><strong class="large">{unit.name}</strong> (Ally)</div>
 
-    <HpControls currentHp={unit.currentHp} maxHp={unit.stats.health} on:adjust={handleHpAdjust} />
-  </div>
+      <HpControls currentHp={unit.currentHp} maxHp={unit.stats.health} on:adjust={handleHpAdjust} />
+    </div>
 
-  <div class="bottom">
-    <ConditionsDisplay
-      activeConditions={unit.activeConditions ?? []}
-      on:toggle={handleConditionToggle}
-    />
+    <div class="bottom">
+      <ConditionsDisplay
+        activeConditions={unit.activeConditions ?? []}
+        on:toggle={handleConditionToggle}
+      />
 
-    <HealthBar currentHp={unit.currentHp} maxHp={unit.stats.health} />
-  </div>
-</Card>
+      <HealthBar currentHp={unit.currentHp} maxHp={unit.stats.health} />
+    </div>
+  </Card>
+</div>
+
+<style>
+  .card-wrapper {
+    transition:
+      max-width 0.3s ease-out,
+      opacity 0.3s ease-out,
+      margin 0.3s ease-out,
+      padding 0.3s ease-out;
+    overflow: hidden;
+    max-width: 1000px;
+  }
+
+  .card-wrapper.removing {
+    max-width: 0;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+  }
+</style>
