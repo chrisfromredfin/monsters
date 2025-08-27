@@ -40,6 +40,10 @@
   }
 </script>
 
+<svelte:head>
+  <title>Gloomhaven Monster Tracker</title>
+</svelte:head>
+
 <div class="reset"><button on:click={resetGame}>Start Over</button></div>
 <h1>Gloomhaven Monster Tracker</h1>
 Scenario Level:
