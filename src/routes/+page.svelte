@@ -126,14 +126,25 @@ Scenario Level:
     margin-top: 1rem;
   }
 
+  .monster-group {
+    display: flex;
+    position: relative;
+  }
+
   .monster-group h3 {
+    position: absolute;
     margin: 0 0 0.5rem 0;
+    transform: rotate(270deg);
+    width: 2rem;
+    bottom: 0;
+    left: 0;
   }
 
   .card-row {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
+    padding-left: 3rem;
   }
 
   div.reset {

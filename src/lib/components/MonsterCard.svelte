@@ -43,33 +43,34 @@
 
     <HpControls currentHp={unit.currentHp} maxHp={unit.stats.health} on:adjust={handleHpAdjust} />
 
-    <StatsDisplay move={unit.stats.move} attack={unit.stats.attack} range={unit.stats.range} />
+    <div class="stattrs">
+      <StatsDisplay move={unit.stats.move} attack={unit.stats.attack} range={unit.stats.range} />
 
-    {#if unit.stats.attributes && unit.stats.attributes.length > 0}
-      <strong>Attributes</strong>:<br />
-      <div class="attributes">
-        {#each unit.stats.attributes as attr (attr)}
-          {@const attrStr = String(attr)}
-          {@const iconKey = attrStr.split(' ')[0]?.toLowerCase()}
-          {@const attrValue = attrStr.split(' ')[1]?.toLowerCase()}
-          {#if iconMap[iconKey]}
-            <span class="attribute-group">
-              <img
-                src={iconMap[iconKey]}
-                width="22"
-                height="22"
-                alt={attrStr}
-                title={attrStr}
-                class="attribute-icon"
-              />
-              {attrValue}
-            </span>
-          {:else}
-            <span>{attrStr}</span>
-          {/if}
-        {/each}
-      </div>
-    {/if}
+      {#if unit.stats.attributes && unit.stats.attributes.length > 0}
+        <div class="attributes">
+          {#each unit.stats.attributes as attr (attr)}
+            {@const attrStr = String(attr)}
+            {@const iconKey = attrStr.split(' ')[0]?.toLowerCase()}
+            {@const attrValue = attrStr.split(' ')[1]?.toLowerCase()}
+            {#if iconMap[iconKey]}
+              <span class="attribute-group">
+                <img
+                  src={iconMap[iconKey]}
+                  width="22"
+                  height="22"
+                  alt={attrStr}
+                  title={attrStr}
+                  class="attribute-icon"
+                />
+                {attrValue}
+              </span>
+            {:else}
+              <span>{attrStr}</span>
+            {/if}
+          {/each}
+        </div>
+      {/if}
+    </div>
   </div>
 
   <div class="bottom">
@@ -81,3 +82,11 @@
     <HealthBar currentHp={unit.currentHp} maxHp={unit.stats.health} />
   </div>
 </Card>
+
+<style>
+  .stattrs {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+</style>

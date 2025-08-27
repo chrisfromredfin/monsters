@@ -11,7 +11,7 @@
     position: relative;
     border: 2px solid #ccc;
     padding: 0.5rem;
-    width: 230px;
+    min-width: 240px;
     background: #f9f9f9;
     border-radius: 4px;
     display: flex;
