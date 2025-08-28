@@ -134,15 +134,16 @@
   0% {
     opacity: 1;
   }
-  50% {
+  15% {
     opacity: 0.6;
+    background-color: red;
   }
-  100% {
+  30% {
     opacity: 1;
   }
 }
 .pulse {
-  animation: pulse-animation 2s ease-in-out infinite;
+  animation: pulse-animation 2s linear infinite;
 }
 
 /* disabled condition buttons */
